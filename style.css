@@ -1,0 +1,107 @@
+    body {
+        background-color: black;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+    }
+    
+    header,
+    footer {
+        width: 100%;
+        height: 10vh;
+        display: flex;
+        flex-direction: row;
+        background-color: blueviolet;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    header h1 {
+        font-family: 'Ranchers', cursive;
+        color: ghostwhite;
+    }
+    
+    title {
+        font-family: 'Ranchers', cursive;
+    }
+    
+    #board {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        grid-gap: 10px;
+        width: 60%;
+        height: 60vh;
+        background-color: ghostwhite;
+        padding: 15px;
+    }
+    
+    .tile {
+        background-color: grey;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    #space {
+        height: 10vh;
+        width: 100%;
+    }
+    
+    #scores {
+        width: 64%;
+        height: 10vh;
+        margin-top: 15px;
+        background-color: ghostwhite;
+    }
+    
+    .tile1,
+    .tile4,
+    .tile7 {
+        border-left: 2px solid red;
+    }
+    
+    .tile3,
+    .tile6,
+    .tile9 {
+        border-right: 2px solid red;
+    }
+    
+    .circle {
+        width: 60%;
+        height: 60%;
+        overflow: hidden;
+        border-radius: 50%;
+        background: grey;
+        box-shadow: 2px grey;
+        animation: border .4s ease 1 both;
+    }
+    
+    .square {
+        width: 60%;
+        height: 60%;
+        overflow: hidden;
+        background: grey;
+        box-shadow: 2px grey;
+        animation: border .4s ease 1 both;
+    }
+    
+    @keyframes border {
+        0% {
+            box-shadow: 0 0 0 2px #fff;
+        }
+        25% {
+            box-shadow: 0 0 0 4px #fff;
+        }
+        50% {
+            box-shadow: 0 0 0 6px #fff;
+        }
+        75% {
+            box-shadow: 0 0 0 8px #fff;
+        }
+        100% {
+            box-shadow: 0 0 0 10px #fff;
+        }
+    }
