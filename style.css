@@ -53,8 +53,14 @@
     #scores {
         width: 64%;
         height: 10vh;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly;
         margin-top: 15px;
         background-color: ghostwhite;
+        font-family: 'Ranchers', cursive;
+        color: red;
     }
     
     .tile1,
