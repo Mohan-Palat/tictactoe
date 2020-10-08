@@ -15,11 +15,8 @@ class Tally {
         } else {
             document.getElementById("player").innerHTML = tally.playerScore;
             document.getElementById("computer").innerHTML = tally.computerScore;
-
-            //document.querySelector(`.tile${x}`).children[0].classList.add("circle");
         }
     }
-
     updatePlayerScore() {
         this.playerScore += 1;
     }
@@ -34,6 +31,31 @@ class Tally {
 const tally = new Tally();
 tally.changeNextPlayer();
 
+const nextTile = (blockTiles, emptyClasses, empty) => {
+    let none = 0;
+    let x = Math.floor(Math.random() * empty.length);
+
+    for (let index = 0; index < blockTiles.length; index++) {
+        if (emptyClasses.indexOf(blockTiles[index]) !== -1) {
+            none += 1;
+        }
+    }
+    if (none > 0) {
+        for (let index = 0; index < blockTiles.length; index++) {
+            if (emptyClasses.indexOf(blockTiles[index]) !== -1) {
+                document
+                    .querySelector(`${blockTiles[index]}`)
+                    .children[0].classList.add("square");
+                break;
+            }
+        }
+    } else {
+        document
+            .querySelector(`.tile${empty[x]}`)
+            .children[0].classList.add("square");
+    }
+};
+
 var empty = [];
 
 function addSign(tile) {
@@ -46,13 +68,37 @@ function addSign(tile) {
             empty.push(parseInt(key));
         }
     }
-    let x = Math.floor(Math.random() * empty.length);
 
-    document
-        .querySelector(`.tile${empty[x]}`)
-        .children[0].classList.add("square");
+    let emptyClasses = empty.map((each) => {
+        return `.tile${each}`;
+    });
+
+    if (tile === "tile0" || tile === "tile1") {
+        let blockTiles = [".tile2", ".tile0", ".tile1", ".tile4"];
+        nextTile(blockTiles, emptyClasses, empty);
+    } else if (tile === "tile3" || tile === "tile6") {
+        let blockTiles = [".tile0", ".tile6", ".tile3", ".tile4", ".tile2"];
+        nextTile(blockTiles, emptyClasses, empty);
+    } else if (tile === "tile2" || tile === "tile5") {
+        let blockTiles = [".tile8", ".tile5", ".tile2", ".tile4", ".tile6"];
+        nextTile(blockTiles, emptyClasses, empty);
+    } else if (tile === "tile7") {
+        let blockTiles = [".tile8", ".tile6", ".tile4", ".tile7", ".tile2"];
+        nextTile(blockTiles, emptyClasses, empty);
+    } else if (tile === "tile4") {
+        let blockTiles = [".tile2", ".tile6", ".tile4", ".tile7", ".tile2"];
+        nextTile(blockTiles, emptyClasses, empty);
+    } else if (tile === "tile8") {
+        let blockTiles = [".tile0", ".tile6", ".tile2"];
+        nextTile(blockTiles, emptyClasses, empty);
+    } else {
+        document
+            .querySelector(`.tile${empty[x]}`)
+            .children[0].classList.add("square");
+    }
 
     empty = [];
+    emptyClasses = [];
 }
 
 function clearAll() {
@@ -101,11 +147,10 @@ document.querySelector("#board").addEventListener("click", function(e) {
     }
 
     function test2() {
-        //console.log(emptyy);
         const a = document.querySelectorAll(".square").length;
         const b = document.querySelectorAll(".circle").length;
         const c = a + b;
-        //console.log(c);
+
         const functionArr = [
             checkScore(emptyy, 0, 1, 2),
             checkScore(emptyy, 3, 4, 5),
@@ -126,7 +171,6 @@ document.querySelector("#board").addEventListener("click", function(e) {
             checkScore2(emptyy, 0, 4, 8),
         ];
 
-        //console.log(functionArr);
         const allEqual = (arr) => arr.every((v) => v === arr[0]);
         for (i = 0; i < functionArr.length; i++) {
             console.log(allEqual(functionArr));
@@ -156,34 +200,9 @@ document.querySelector("#board").addEventListener("click", function(e) {
     }
     test2();
 
-    console.log(scenerios);
-
-    if (e.target.className === "tile tile0") {
-        addSign(e.target.classList[1]);
-    }
-
-    if (e.target.className === "tile tile1") {
-        addSign(e.target.classList[1]);
-    }
-    if (e.target.className === "tile tile2") {
-        addSign(e.target.classList[1]);
-    }
-    if (e.target.className === "tile tile3") {
-        addSign(e.target.classList[1]);
-    }
-    if (e.target.className === "tile tile4") {
-        addSign(e.target.classList[1]);
-    }
-    if (e.target.className === "tile tile5") {
-        addSign(e.target.classList[1]);
-    }
-    if (e.target.className === "tile tile6") {
-        addSign(e.target.classList[1]);
-    }
-    if (e.target.className === "tile tile7") {
-        addSign(e.target.classList[1]);
-    }
-    if (e.target.className === "tile tile8") {
-        addSign(e.target.classList[1]);
+    for (let index = 0; index < 9; index++) {
+        if (e.target.className === `tile tile${index}`) {
+            addSign(e.target.classList[1]);
+        }
     }
 });
