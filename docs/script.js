@@ -16,7 +16,7 @@ class Tally {
             document.getElementById("player").innerHTML = tally.playerScore;
             document.getElementById("computer").innerHTML = tally.computerScore;
 
-            document.querySelector(`.tile${x}`).children[0].classList.add("circle");
+            //document.querySelector(`.tile${x}`).children[0].classList.add("circle");
         }
     }
 
