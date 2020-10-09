@@ -8,13 +8,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" />
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Ranchers&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merienda:wght@700&family=Open+Sans+Condensed:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@300&display=swap" rel="stylesheet">
 </head>
 
 <body>
+
     <header>
-        <h1>TicTacToe </h1>
+        <h1>TicTacToe </h1>&nbsp;
+        <div class="newGame"><button id="newGame">New Game</button></div>
     </header>
-    <section id="space"></section>
+    <section id="space"><button class="top-button" id="clear">Clear Board</button><button class="top-button" id="changeName">Change Name</button><button class="top-button" id="changeMode">Change Mode</button>
+    </section>
+    <section id="congrats" class="congrats"></section>
     <section id="board">
 
         <div class="tile tile0">
@@ -47,12 +53,16 @@
 
     </section>
     <section id="scores">
-        <h2>Your score: <span id="player"></span></h2>
-        <h2>Computer's score: <span id="computer"></span></h2>
-        <h2>Ties: <span id="ties"></span></h2>
+        <h2><span class="title"><span id="playerName"></span>'s score: </span> <span id="player"></span></h2>
+        <h2><span class="title"><span id="otherName"></span>'s score: </span> <span id="computer"></span></h2>
+        <h2><span class="title">Ties:</span> <span id="ties"></span></h2>
+        <div id="mode">
+            <h2> <span class="title">Mode: </span> <span id="playerMode"></span></h2>
+        </div>
     </section>
     <section id="space"></section>
-    <footer></footer>
+
+
     <script src="script.js"></script>
 </body>
 

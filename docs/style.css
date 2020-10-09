@@ -1,6 +1,7 @@
     body {
         background-color: black;
         display: flex;
+        opacity: 1;
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -23,17 +24,23 @@
         color: ghostwhite;
     }
     
+    #newGame {
+        background-color: mediumspringgreen;
+        border: 2px solid mediumspringgreen;
+    }
+    
     title {
         font-family: 'Ranchers', cursive;
     }
     
     #board {
+        max-width: 500px;
         display: grid;
         grid-template-columns: auto auto auto;
         grid-gap: 10px;
         width: 60%;
         height: 60vh;
-        background-color: ghostwhite;
+        background-color: transparent;
         padding: 15px;
     }
     
@@ -48,31 +55,40 @@
     #space {
         height: 10vh;
         width: 100%;
-    }
-    
-    #scores {
-        width: 64%;
-        height: 10vh;
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: space-evenly;
+        justify-content: center;
+    }
+    
+    #space button {
+        border-radius: 3px;
+        padding: 10px 30px;
+    }
+    
+    #scores {
+        height: 10vh;
+        max-width: 500px;
+        width: 79%;
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         margin-top: 15px;
-        background-color: ghostwhite;
+        background-color: transparent;
         font-family: 'Ranchers', cursive;
-        color: red;
+        color: rgb(187, 163, 211);
     }
     
-    .tile1,
-    .tile4,
-    .tile7 {
-        border-left: 2px solid red;
+    .tile {
+        border: 2px solid grey;
+        box-shadow: 2px 2px 7px grey inset;
     }
     
-    .tile3,
-    .tile6,
-    .tile9 {
-        border-right: 2px solid red;
+    .title {
+        font-family: 'Yanone Kaffeesatz', sans-serif;
+        color: tomato;
     }
     
     .circle {
@@ -94,6 +110,10 @@
         animation: border .4s ease 1 both;
     }
     
+    .win {
+        animation: changeColor .4s ease 1 both;
+    }
+    
     @keyframes border {
         0% {
             box-shadow: 0 0 0 2px #fff;
@@ -109,5 +129,172 @@
         }
         100% {
             box-shadow: 0 0 0 10px #fff;
+        }
+    }
+    
+    @keyframes changeColor {
+        0% {
+            box-shadow: 0 0 0 2px #fff;
+        }
+        25% {
+            box-shadow: 0 0 0 4px red;
+        }
+        50% {
+            box-shadow: 0 0 0 6px red;
+        }
+        75% {
+            box-shadow: 0 0 0 8px red;
+        }
+        100% {
+            box-shadow: 0 0 0 10px red;
+        }
+    }
+    
+    .alert {
+        animation: alertBox .5s ease-in-out 1 both;
+    }
+    
+    .congrats {
+        width: 50vw;
+        max-width: 500px;
+        height: 50vh;
+        background-color: thistle;
+        position: absolute;
+        top: -470px;
+        z-index: 1;
+        text-align: center;
+        padding: 2em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .congrats h1 {
+        font-family: 'Merienda', cursive;
+        font-size: 2em;
+        color: rebeccapurple
+    }
+    
+    .congrats p {
+        font-family: 'Open Sans Condensed', sans-serif;
+        font-size: 1.5em;
+        color: ghostwhite;
+        margin: 0;
+        font-weight: bold;
+        margin-bottom: 0.5em;
+    }
+    
+    .congrats button {
+        margin-bottom: 2em;
+    }
+    
+    button {
+        padding: 10px;
+        background-color: saddlebrown;
+        color: white;
+        box-shadow: 7px 7px 39px rebeccapurple inset;
+        font-size: 0.8em;
+        border: 2px solid saddlebrown;
+        border-radius: 20px;
+    }
+    
+    .top-button {
+        margin-right: .81%;
+    }
+    
+    #nameInput {
+        padding: 10px;
+        margin-bottom: 2em;
+        ;
+        width: 50%;
+        color: brown;
+        box-shadow: 7px 7px 39px rebeccapurple inset;
+        border: 2px solid saddlebrown;
+        border-radius: 20px;
+        text-align: center;
+        font-size: 1.2em;
+    }
+    
+    #nameInput:focus {
+        outline: none;
+    }
+    
+    button:hover {
+        padding: 13px;
+        box-shadow: 7px 7px 39px purple inset
+    }
+    
+    button:focus {
+        outline: none;
+        animation: button .3s ease-in-out 1 both;
+    }
+    
+    .dim {
+        animation: dim .5s ease 1 both;
+    }
+    
+    @keyframes button {
+        0% {
+            background-color: saddlebrown;
+            box-shadow: 7px 7px 39px purple inset
+        }
+        50% {
+            background-color: saddlebrown;
+        }
+        100% {
+            background-color: blueviolet;
+            padding: 14px;
+            box-shadow: 7px 7px 39px purple;
+        }
+    }
+    
+    @keyframes dim {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.8;
+        }
+        100% {
+            opacity: 0.5;
+        }
+    }
+    
+    @keyframes alertBox {
+        0% {
+            top: -470px;
+        }
+        25% {
+            top: -370px;
+        }
+        50% {
+            top: -170px;
+        }
+        75% {
+            top: -70px;
+        }
+        100% {
+            top: 100px;
+        }
+    }
+    
+    @media only screen and (max-width: 550px) {
+        #board {
+            grid-gap: 20px;
+            width: 85%;
+            height: 50vh;
+        }
+        h1 {
+            font-size: 1.5em;
+        }
+        .congrats h1 {
+            font-size: 1.5em;
+        }
+        .congrats {
+            width: 60vw;
+        }
+        #scores {
+            display: block;
         }
     }
