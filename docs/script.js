@@ -55,7 +55,8 @@ class Tally {
         }
 
         document.querySelector("#playerName").innerHTML = localStorage.name;
-        document.querySelector("#otherName").innerHTML = localStorage.otherName;
+        document.querySelector("#otherName").innerHTML =
+            localStorage.otherPersonName;
         document.querySelector("#playerMode").innerHTML =
             localStorage.mode === "self" ?
             "Player vs Other Person" :
@@ -75,7 +76,7 @@ class Tally {
 
             document.querySelector(
                 "#congrats"
-            ).innerHTML = `<h1>Welcome to TicTacToe!</h1><p>What mode do you want to play?</p><button type="button" id="self">Play against Others/Myself</button></button><button type="button" id="comp">Play against Computer</button></button>`;
+            ).innerHTML = `<h1>What mode do you want to play?</h1><button type="button" id="self">Play against Others/Myself</button></button><button type="button" id="comp">Play against Computer</button></button>`;
         } else {
             return;
         }
@@ -457,7 +458,6 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     tally.askPlayer();
   } else if (e.target.id === "selfUpdate") {
     localStorage.mode = "self";
-
     document.querySelectorAll("body :not(.congrats").forEach((element) => {
       element.classList.remove("dim");
     });
