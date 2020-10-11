@@ -48,13 +48,14 @@ class Tally {
         this.boardClear = update;
     }
     updatePlayerNames(update) {
+        if (localStorage.mode === "self") {
+            localStorage.otherPersonName = "Other Person";
+        } else if (localStorage.mode === "comp") {
+            localStorage.otherPersonName = "Computer";
+        }
+
         document.querySelector("#playerName").innerHTML = localStorage.name;
-        document.querySelector("#otherName").innerHTML =
-            localStorage.mode === "self" ?
-            "Other Person" :
-            localStorage.mode === "comp" ?
-            "Computer" :
-            "";
+        document.querySelector("#otherName").innerHTML = localStorage.otherName;
         document.querySelector("#playerMode").innerHTML =
             localStorage.mode === "self" ?
             "Player vs Other Person" :
@@ -302,8 +303,7 @@ document.querySelector("#board").addEventListener("click", function(e) {
                         checkScore2(emptyy, 2, 4, 6),
                         checkScore2(emptyy, 0, 4, 8),
                     ];
-                    const playerName = document.querySelector("#playerName").innerHTML;
-                    const otherPersonName = document.querySelector("#otherName").innerHTML;
+
                     const allEqual = (arr) => arr.every((v) => v === arr[0]);
                     for (i = 0; i < functionArr.length; i++) {
                         if (functionArr.indexOf("circle") !== -1) {
@@ -328,7 +328,7 @@ document.querySelector("#board").addEventListener("click", function(e) {
             localStorage.name
           } Wins this round!</h1>${
             localStorage.mode === "self"
-              ? `<p>${tally.names[1]} gets to start the next turn </p>`
+              ? `<p>${localStorage.otherPersonName} gets to start the next turn </p>`
               : ""
           } <button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
 
@@ -359,9 +359,11 @@ document.querySelector("#board").addEventListener("click", function(e) {
           document.querySelector(".congrats").classList.add("alert");
 
           document.querySelector("#congrats").innerHTML = `<h1>${
-            tally.names[1]
+            localStorage.otherPersonName
           } Wins this round!</h1><p>${
-            localStorage.mode === "self" ? localStorage.name : tally.names[1]
+            localStorage.mode === "self"
+              ? localStorage.name
+              : localStorage.otherPersonName
           } gets to start the next turn</p><button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
           localStorage.computerScore++;
 
