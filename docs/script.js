@@ -1,4 +1,21 @@
 console.log(localStorage.getItem("mode"));
+localStorage["personTile"] = "circle";
+localStorage["otherTile"] = "square";
+
+document.querySelectorAll(".tile").forEach((element, index) => {
+    element.children[0].className = localStorage[`tile${index}`];
+});
+
+document.querySelectorAll(".tile").forEach((element, index) => {
+    if (parseInt(localStorage.wins1) === index) {
+        console.log("yes");
+        element.children[0].id = "win";
+    } else if (parseInt(localStorage.wins2) === index) {
+        element.children[0].id = "win";
+    } else if (parseInt(localStorage.wins3) === index) {
+        element.children[0].id = "win";
+    }
+});
 class Tally {
     constructor() {
         this.playerScore = 0;
@@ -7,7 +24,7 @@ class Tally {
         this.roundWon = false;
         this.nextPlayer = "";
         this.mode = localStorage.mode;
-        this.boardClear = true;
+        this.boardClear = false;
         this.names = [
             localStorage.name,
             this.mode === "self" ? "Other Person" : "Computer",
@@ -15,11 +32,19 @@ class Tally {
     }
 
     changeNextPlayer(nextt) {
-        let x = Math.floor(Math.random() * 8);
         if (nextt) {
+            let x = Math.floor(Math.random() * 8);
             console.log(nextt);
             this.nextPlayer = nextt;
-            document.querySelector(`.tile${x}`).children[0].classList.add(`${nextt}`);
+            document.querySelector(`.tile${x}`).children[0].className = nextt;
+            localStorage[`tile${x}`] =
+                nextt === "circle" ?
+                localStorage.personTile :
+                nextt === "square" ?
+                localStorage.otherTile :
+                "";
+
+            console.log(`tile${x}`);
         }
     }
     resetAll() {
@@ -136,16 +161,19 @@ const nextTile = (blockTiles, emptyClasses, empty) => {
     if (none > 0) {
         for (let index = 0; index < blockTiles.length; index++) {
             if (emptyClasses.indexOf(blockTiles[index]) !== -1) {
-                document
-                    .querySelector(`${blockTiles[index]}`)
-                    .children[0].classList.add("square");
+                document.querySelector(`${blockTiles[index]}`).children[0].className =
+                    "square";
+                const tileClass = blockTiles[index].substring(1);
+                localStorage[`${tileClass}`] = localStorage.otherTile;
+                console.log(tileClass);
                 break;
             }
         }
     } else {
-        document
-            .querySelector(`.tile${empty[x]}`)
-            .children[0].classList.add("square");
+        document.querySelector(`.tile${empty[x]}`).children[0].className = "square";
+
+        localStorage[`tile${empty[x]}`] = localStorage.otherTile;
+        console.log(`tile${empty[x]}`);
     }
 };
 
@@ -159,18 +187,28 @@ function addSign(tile) {
     const c = a + b;
 
     if (localStorage.mode === "self") {
+        console.log(tile);
         if (next === false) {
-            document.querySelector(`.${tile}`).children[0].classList.add("circle");
+            document.querySelector(`.${tile}`).children[0].className =
+                localStorage.personTile;
             next = !next;
+            console.log(document.querySelector(`.${tile}`).children[0].className);
+            localStorage[`${tile}`] = localStorage.personTile;
+            console.log(localStorage[`${tile}`]);
         } else {
             {
-                document.querySelector(`.${tile}`).children[0].classList.add("square");
+                document.querySelector(`.${tile}`).children[0].className =
+                    localStorage.otherTile;
 
                 next = !next;
+                localStorage[`${tile}`] = localStorage.otherTile;
             }
         }
     } else {
-        document.querySelector(`.${tile}`).children[0].classList.add("circle");
+        document.querySelector(`.${tile}`).children[0].className =
+            localStorage.personTile;
+
+        localStorage[`${tile}`] = localStorage.personTile;
         const list = document.querySelector("#board").children;
         const newList = Object.assign({}, list);
 
@@ -203,9 +241,10 @@ function addSign(tile) {
             let blockTiles = [".tile0", ".tile6", ".tile2"];
             nextTile(blockTiles, emptyClasses, empty);
         } else {
-            document
-                .querySelector(`.tile${empty[x]}`)
-                .children[0].classList.add("square");
+            document.querySelector(`.tile${empty[x]}`).children[0].className =
+                "square";
+
+            localStorage[`tile${empty[x]}`] = localStorage.otherTile;
         }
 
         empty = [];
@@ -225,15 +264,31 @@ function clearAll() {
             element.classList.remove("square");
         }
     });
-    document.querySelectorAll(".win").forEach((element) => {
-        if (element.classList.contains("win")) {
-            element.classList.remove("win");
-        }
+    document.querySelectorAll("#win").forEach((element) => {
+        element.id = "";
     });
+
+    [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach((one, index) => {
+        localStorage[`tile${one}`] = "";
+    });
+
+    localStorage.wins1 = "";
+    localStorage.wins2 = "";
+    localStorage.wins3 = "";
 }
+const notEmpty = [];
+
+const numWins = document.querySelectorAll("#win").forEach((element) => {
+    if (element !== "") {
+        notEmpty.push(element);
+    }
+});
+
 document.querySelector("#board").addEventListener("click", function(e) {
             console.log(tally.boardClear);
-            if (tally.boardClear) {
+            if (!tally.boardClear || notEmpty > 0) {
+                tally.showWarning();
+            } else {
                 setTimeout(() => {
                     for (let index = 0; index < 9; index++) {
                         if (e.target.className === `tile tile${index}`) {
@@ -308,15 +363,12 @@ document.querySelector("#board").addEventListener("click", function(e) {
                     const allEqual = (arr) => arr.every((v) => v === arr[0]);
                     for (i = 0; i < functionArr.length; i++) {
                         if (functionArr.indexOf("circle") !== -1) {
-                            document
-                                .querySelector(`.tile${values[0]}`)
-                                .children[0].classList.add("win");
-                            document
-                                .querySelector(`.tile${values[1]}`)
-                                .children[0].classList.add("win");
-                            document
-                                .querySelector(`.tile${values[2]}`)
-                                .children[0].classList.add("win");
+                            document.querySelector(`.tile${values[0]}`).children[0].id = "win";
+                            document.querySelector(`.tile${values[1]}`).children[0].id = "win";
+                            document.querySelector(`.tile${values[2]}`).children[0].id = "win";
+                            localStorage.wins1 = values[0];
+                            localStorage.wins2 = values[1];
+                            localStorage.wins3 = values[2];
 
                             document
                                 .querySelectorAll("body :not(.congrats")
@@ -338,19 +390,17 @@ document.querySelector("#board").addEventListener("click", function(e) {
           document.getElementById("player").innerHTML =
             localStorage.playerScore;
 
-          tally.changeNextPlayer("circle");
+          tally.changeNextPlayer(localStorage.personTile);
 
           break;
         } else if (functionArr.indexOf("square") !== -1) {
-          document
-            .querySelector(`.tile${values[0]}`)
-            .children[0].classList.add("win");
-          document
-            .querySelector(`.tile${values[1]}`)
-            .children[0].classList.add("win");
-          document
-            .querySelector(`.tile${values[2]}`)
-            .children[0].classList.add("win");
+          document.querySelector(`.tile${values[0]}`).children[0].id = "win";
+          document.querySelector(`.tile${values[1]}`).children[0].id = "win";
+          document.querySelector(`.tile${values[2]}`).children[0].id = "win";
+
+          localStorage.wins1 = values[0];
+          localStorage.wins2 = values[1];
+          localStorage.wins3 = values[2];
 
           document
             .querySelectorAll("body :not(.congrats")
@@ -372,7 +422,7 @@ document.querySelector("#board").addEventListener("click", function(e) {
           document.getElementById("computer").innerHTML =
             localStorage.computerScore;
           if (localStorage.mode === "comp") {
-            tally.changeNextPlayer("square");
+            tally.changeNextPlayer(localStorage.otherTile);
           }
 
           break;
@@ -394,8 +444,6 @@ document.querySelector("#board").addEventListener("click", function(e) {
       }
     }
     test2();
-  } else {
-    tally.showWarning();
   }
 });
 
@@ -408,9 +456,10 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     clearAll();
     let x = Math.floor(Math.random() * 8);
     if (tally.nextPlayer === "square" && localStorage.mode === "comp") {
-      document
-        .querySelector(`.tile${x}`)
-        .children[0].classList.add(`${tally.nextPlayer}`);
+      document.querySelector(
+        `.tile${x}`
+      ).children[0].className = `${tally.nextPlayer}`;
+      localStorage[`tile${x}`] = tally.nextPlayer;
     }
   } else if (e.target.tagName === "A") {
     document.querySelectorAll("body :not(.congrats").forEach((element) => {

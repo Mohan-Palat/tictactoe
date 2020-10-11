@@ -160,8 +160,9 @@
         animation: line .5s ease .45s forwards;
     }
     
-    .win {
-        animation: changeColor .4s ease 1 both;
+    #win {
+        box-shadow: 0 0 0 10px mediumspringgreen;
+        animation: changeColor 2s ease infinite both;
     }
     
     .container {
@@ -204,19 +205,25 @@
     
     @keyframes changeColor {
         0% {
-            box-shadow: 0 0 0 2px #fff;
+            box-shadow: 0 0 0 10px salmon;
         }
         25% {
-            box-shadow: 0 0 0 4px red;
+            box-shadow: 0 0 0 10px brown;
         }
         50% {
-            box-shadow: 0 0 0 6px red;
+            box-shadow: 0 0 0 10px red;
         }
         75% {
-            box-shadow: 0 0 0 8px red;
+            box-shadow: 0 0 0 10px rebeccapurple;
         }
         100% {
-            box-shadow: 0 0 0 10px red;
+            box-shadow: 0 0 0 10px mediumspringgreen;
+        }
+        from {
+            transform: rotateY(0deg);
+        }
+        to {
+            transform: rotateY(359deg);
         }
     }
     
