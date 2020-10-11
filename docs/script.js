@@ -1,3 +1,4 @@
+console.log(localStorage.getItem("mode"));
 class Tally {
     constructor() {
         this.playerScore = 0;
@@ -65,7 +66,7 @@ class Tally {
         document.getElementById("ties").innerHTML = localStorage.ties;
     }
     chooseMode() {
-        if (localStorage.getItem("mode") === "off") {
+        if (!localStorage.getItem("mode")) {
             document.querySelectorAll("body :not(.congrats").forEach((element) => {
                 element.classList.add("dim");
             });
@@ -517,7 +518,8 @@ document.querySelector("#space").addEventListener("click", function (e) {
 });
 
 document.querySelector("#newGame").addEventListener("click", function (e) {
-  localStorage.setItem("mode", "off");
-  console.log(localStorage.getItem("mode"));
   tally.resetAll();
+  localStorage.removeItem("mode");
+
+  console.log(localStorage.getItem("mode"));
 });
