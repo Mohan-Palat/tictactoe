@@ -24,7 +24,7 @@ class Tally {
         this.roundWon = false;
         this.nextPlayer = "";
         this.mode = localStorage.mode;
-        this.boardClear = false;
+        this.boardClear = true;
         this.names = [
             localStorage.name,
             this.mode === "self" ? "Other Person" : "Computer",
@@ -516,6 +516,7 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     localStorage.computerScore = 0;
     localStorage.ties = 0;
     tally.updatePlayerNames();
+    tally.boardClear = true;
     //tally.askPlayer();
   } else if (e.target.id === "compUpdate") {
     localStorage.mode = "comp";
@@ -529,6 +530,7 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     localStorage.computerScore = 0;
     localStorage.ties = 0;
     tally.updatePlayerNames();
+    tally.boardClear = true;
   } else if (e.target.id === "confirm") {
     document.querySelectorAll("body :not(.congrats").forEach((element) => {
       element.classList.remove("dim");
