@@ -66,7 +66,7 @@ class Tally {
         document.getElementById("ties").innerHTML = localStorage.ties;
     }
     chooseMode() {
-        if (!localStorage.getItem("mode")) {
+        if (localStorage.getItem("mode") === null) {
             document.querySelectorAll("body :not(.congrats").forEach((element) => {
                 element.classList.add("dim");
             });
@@ -156,7 +156,7 @@ function addSign(tile) {
     const b = document.querySelectorAll(".circle").length;
     const c = a + b;
 
-    if (tally.mode === "self") {
+    if (localStorage.mode === "self") {
         if (next === false) {
             document.querySelector(`.${tile}`).children[0].classList.add("circle");
             next = !next;
@@ -325,9 +325,9 @@ document.querySelector("#board").addEventListener("click", function(e) {
                             document.querySelector(".congrats").classList.add("alert");
 
                             document.querySelector("#congrats").innerHTML = `<h1>${
-            tally.names[0]
+            localStorage.name
           } Wins this round!</h1>${
-            tally.mode === "self"
+            localStorage.mode === "self"
               ? `<p>${tally.names[1]} gets to start the next turn </p>`
               : ""
           } <button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
@@ -361,14 +361,14 @@ document.querySelector("#board").addEventListener("click", function(e) {
           document.querySelector("#congrats").innerHTML = `<h1>${
             tally.names[1]
           } Wins this round!</h1><p>${
-            tally.mode === "self" ? tally.names[0] : tally.names[1]
+            localStorage.mode === "self" ? localStorage.name : tally.names[1]
           } gets to start the next turn</p><button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
           localStorage.computerScore++;
 
           tally.updateComputerScore();
           document.getElementById("computer").innerHTML =
             localStorage.computerScore;
-          if (tally.mode === "comp") {
+          if (localStorage.mode === "comp") {
             tally.changeNextPlayer("square");
           }
 
@@ -384,7 +384,7 @@ document.querySelector("#board").addEventListener("click", function(e) {
 
         document.querySelector(
           "#congrats"
-        ).innerHTML = `<h1>This round ends in a tie!!</h1><p>${tally.names[0]} gets to start the next turn</p><button type="button" id="next">start next round now</button></button><a href="#">Go back to board</a>`;
+        ).innerHTML = `<h1>This round ends in a tie!!</h1><p>${localStorage.name} gets to start the next turn</p><button type="button" id="next">start next round now</button></button><a href="#">Go back to board</a>`;
 
         localStorage.ties++;
         document.getElementById("ties").innerHTML = localStorage.ties;
@@ -404,7 +404,7 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     document.querySelector(".congrats").classList.remove("alert");
     clearAll();
     let x = Math.floor(Math.random() * 8);
-    if (tally.nextPlayer === "square" && tally.mode === "comp") {
+    if (tally.nextPlayer === "square" && localStorage.mode === "comp") {
       document
         .querySelector(`.tile${x}`)
         .children[0].classList.add(`${tally.nextPlayer}`);
@@ -510,7 +510,7 @@ document.querySelector("#space").addEventListener("click", function (e) {
       tally.boardClear = !tally.boardClear;
     }
   } else if (e.target.id === "changeMode") {
-    tally.mode = "";
+    //tally.mode = "";
     tally.chooseModeWithoutName();
 
     clearAll();
@@ -520,6 +520,6 @@ document.querySelector("#space").addEventListener("click", function (e) {
 document.querySelector("#newGame").addEventListener("click", function (e) {
   tally.resetAll();
   localStorage.removeItem("mode");
-
+  tally.chooseMode();
   console.log(localStorage.getItem("mode"));
 });

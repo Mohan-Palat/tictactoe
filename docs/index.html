@@ -14,54 +14,60 @@
 
 <body>
 
-    <header>
+    <header class="header">
         <h1>TicTacToe </h1>&nbsp;
+
         <div class="newGame"><button id="newGame">New Game</button></div>
+
     </header>
-    <section id="space"><button class="top-button" id="clear">Next Round</button><button class="top-button" id="changeName">Change Name</button><button class="top-button" id="changeMode">Change Mode</button>
+    <section id="space" class="space1"><button class="top-button" id="clear">Next Round</button><button class="top-button" id="changeName">Change Name</button><button class="top-button" id="changeMode">Change
+            Mode</button>
     </section>
     <section id="congrats" class="congrats"></section>
-    <section id="board">
+    <div class="container">
+        <section id="board" class="board">
 
-        <div class="tile tile0">
-            <div class=""></div>
-        </div>
-        <div class="tile tile1">
-            <div class=""></div>
-        </div>
-        <div class="tile tile2">
-            <div class=""></div>
-        </div>
-        <div class="tile tile3">
-            <div class=""></div>
-        </div>
-        <div class="tile tile4">
-            <div class=""></div>
-        </div>
-        <div class="tile tile5">
-            <div class=""></div>
-        </div>
-        <div class="tile tile6">
-            <div class=""></div>
-        </div>
-        <div class="tile tile7">
-            <div class=""></div>
-        </div>
-        <div class="tile tile8">
-            <div class=""></div>
-        </div>
+            <div class="tile tile0">
+                <div class=""></div>
+            </div>
+            <div class="tile tile1">
+                <div class=""></div>
+            </div>
+            <div class="tile tile2">
+                <div class=""></div>
+            </div>
+            <div class="tile tile3">
+                <div class=""></div>
+            </div>
+            <div class="tile tile4">
+                <div class=""></div>
+            </div>
+            <div class="tile tile5">
+                <div class=""></div>
+            </div>
+            <div class="tile tile6">
+                <div class=""></div>
+            </div>
+            <div class="tile tile7">
+                <div class=""></div>
+            </div>
+            <div class="tile tile8">
+                <div class=""></div>
+            </div>
 
-    </section>
-    <section id="scores">
-        <h2><span class="title"><span id="playerName"></span>'s score: </span> <span id="player"></span></h2>
-        <h2><span class="title"><span id="otherName"></span>'s score: </span> <span id="computer"></span></h2>
-        <h2><span class="title">Ties:</span> <span id="ties"></span></h2>
-        <div id="mode">
-            <h2> <span class="title">Mode: </span> <span id="playerMode"></span></h2>
-        </div>
-    </section>
-    <section id="space"></section>
+        </section>
+        <section id="scores" class="scores">
+            <h2><span class="title"><span id="playerName"></span> :</span>&nbsp; <span id="player"></span></h2>
+            <h2><span class="title"><span id="otherName"></span> :</span>&nbsp; <span id="computer"></span></h2>
+            <h2><span class="title">Ties: </span> &nbsp; <span id="ties"></span></h2>
 
+        </section>
+    </div>
+    <div id="mode">
+        <h2> <span class="title">Mode: </span> &nbsp; <span id="playerMode"></span></h2>
+    </div>
+    <section id="space" class="space2"></section>
+    <footer class="footer">Copyright @2020</footer>
 
     <script src="script.js"></script>
 </body>
