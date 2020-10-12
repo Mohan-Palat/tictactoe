@@ -384,7 +384,7 @@ document.querySelector("#board").addEventListener("click", function (e) {
                 ? `<p>${localStorage.otherPersonName} gets to start the next turn </p>`
                 : ""
             } <button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
-          }, 800);
+          }, 400);
 
           localStorage.playerScore++;
 
@@ -417,7 +417,7 @@ document.querySelector("#board").addEventListener("click", function (e) {
                 ? localStorage.name
                 : localStorage.otherPersonName
             } gets to start the next turn</p><button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
-          }, 700);
+          }, 400);
 
           localStorage.computerScore++;
 
