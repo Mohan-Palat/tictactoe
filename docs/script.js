@@ -369,21 +369,22 @@ document.querySelector("#board").addEventListener("click", function(e) {
                             localStorage.wins1 = values[0];
                             localStorage.wins2 = values[1];
                             localStorage.wins3 = values[2];
+                            setTimeout(() => {
+                                        document
+                                            .querySelectorAll("body :not(.congrats")
+                                            .forEach((element) => {
+                                                element.classList.add("dim");
+                                            });
+                                        document.querySelector(".congrats").classList.add("alert");
 
-                            document
-                                .querySelectorAll("body :not(.congrats")
-                                .forEach((element) => {
-                                    element.classList.add("dim");
-                                });
-                            document.querySelector(".congrats").classList.add("alert");
-
-                            document.querySelector("#congrats").innerHTML = `<h1>${
-            localStorage.name
-          } Wins this round!</h1>${
-            localStorage.mode === "self"
-              ? `<p>${localStorage.otherPersonName} gets to start the next turn </p>`
-              : ""
-          } <button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
+                                        document.querySelector("#congrats").innerHTML = `<h1>${
+              localStorage.name
+            } Wins this round!</h1>${
+              localStorage.mode === "self"
+                ? `<p>${localStorage.otherPersonName} gets to start the next turn </p>`
+                : ""
+            } <button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
+          }, 800);
 
           localStorage.playerScore++;
 
@@ -401,21 +402,23 @@ document.querySelector("#board").addEventListener("click", function(e) {
           localStorage.wins1 = values[0];
           localStorage.wins2 = values[1];
           localStorage.wins3 = values[2];
+          setTimeout(() => {
+            document
+              .querySelectorAll("body :not(.congrats")
+              .forEach((element) => {
+                element.classList.add("dim");
+              });
+            document.querySelector(".congrats").classList.add("alert");
 
-          document
-            .querySelectorAll("body :not(.congrats")
-            .forEach((element) => {
-              element.classList.add("dim");
-            });
-          document.querySelector(".congrats").classList.add("alert");
+            document.querySelector("#congrats").innerHTML = `<h1>${
+              localStorage.otherPersonName
+            } Wins this round!</h1><p>${
+              localStorage.mode === "self"
+                ? localStorage.name
+                : localStorage.otherPersonName
+            } gets to start the next turn</p><button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
+          }, 700);
 
-          document.querySelector("#congrats").innerHTML = `<h1>${
-            localStorage.otherPersonName
-          } Wins this round!</h1><p>${
-            localStorage.mode === "self"
-              ? localStorage.name
-              : localStorage.otherPersonName
-          } gets to start the next turn</p><button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
           localStorage.computerScore++;
 
           tally.updateComputerScore();
