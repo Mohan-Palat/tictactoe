@@ -141,25 +141,6 @@
         animation: border .4s ease 1 both;
     }
     
-    .line1,
-    .line2 {
-        position: absolute;
-        top: 60px;
-        left: 60px;
-        border-top: 1px solid #fff;
-        transform: rotate(45deg);
-        transform-origin: 50% 50%;
-    }
-    
-    .line2 {
-        transform: rotate(-45deg);
-    }
-    
-    .line1,
-    .line2 {
-        animation: line .5s ease .45s forwards;
-    }
-    
     #win {
         box-shadow: 0 0 0 10px mediumspringgreen;
         animation: changeColor 2s ease infinite both;
@@ -172,17 +153,6 @@
         align-items: center;
         grid-template-areas: 'scores' 'board';
         grid-template-columns: repeat(1, 1fr);
-    }
-    
-    @keyframes line {
-        0% {
-            left: 60px;
-            width: 0;
-        }
-        100% {
-            left: 10px;
-            width: 100px;
-        }
     }
     
     @keyframes border {
