@@ -22,15 +22,16 @@
         <div class="newGame"><button id="newGame">New Game</button></div>
 
     </header>
-    <audio id="clickSound" src="./button.mp3" preload="auto"></audio>
+    <audio id="clickSound" src="./sound.mp3" preload="auto"></audio>
+    <audio id="clickSound2" src="./sound2.mp3" preload="auto"></audio>
+
     <section id="space" class="space1"><button class="top-button" id="clear">Next Round</button><button
             class="top-button" id="changeName">Change Name</button><button class="top-button" id="changeMode">Change
             Mode</button>
     </section>
-    <button class="top-button hide" id="replay">Replay Game Moves</button>
     <section id="congrats" class="congrats"></section>
     <section id="playback">
-        <button class="top-button" id="closeReplay">Close Replay</button>
+        <button class="top-button closeReplay" id="closeReplay">Close Replay</button>
         <div id="board2">
             <div class="tileReplay">
                 <div></div>
@@ -62,6 +63,8 @@
         </div>
     </section>
     <div class="container">
+        <h4 class="hide" id="replay">Replay Game Moves</h4>
+
         <section id="board" class="board">
 
             <div class="tile tile0">
@@ -93,6 +96,8 @@
             </div>
 
         </section>
+
+
         <section id="scores" class="scores">
             <h2><span class="title">&#9673; <span id="playerName"></span> :</span>&nbsp; <span id="player"></span></h2>
             <h2><span class="title">&#9635; <span id="otherName"></span> :</span>&nbsp; <span id="computer"></span></h2>

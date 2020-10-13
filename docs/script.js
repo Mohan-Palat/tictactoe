@@ -1,5 +1,15 @@
 localStorage["personTile"] = "circle";
 localStorage["otherTile"] = "square";
+const playSound = () => {
+  let audio = document.getElementById("clickSound");
+  audio.play();
+};
+
+const playSound2 = () => {
+  let audio = document.getElementById("clickSound2");
+  audio.play();
+};
+
 let playback = [];
 document.querySelectorAll(".tile").forEach((element, index) => {
   element.children[0].className = localStorage[`tile${index}`];
@@ -16,6 +26,9 @@ document.querySelectorAll(".tile").forEach((element, index) => {
 });
 
 const dimScreen = (text) => {
+  document.querySelector(".space1").style.pointerEvents = "none";
+  document.querySelector("#newGame").style.pointerEvents = "none";
+
   document.querySelectorAll("body :not(.congrats").forEach((element) => {
     element.classList.add("dim");
   });
@@ -61,6 +74,9 @@ class Tally {
     clearAll();
     this.changeNextPlayer();
     this.chooseMode();
+    localStorage.playerScore = 0;
+    localStorage.computerScore = 0;
+    localStorage.ties = 0;
   }
   updatePlayerScore() {
     this.playerScore += 1;
@@ -157,23 +173,21 @@ const nextTile = (blockTiles, emptyClasses, empty) => {
 };
 
 var empty = [];
-let next = false;
-let is;
 
 function addSign(tile) {
   if (localStorage.mode === "self") {
-    if (next === false) {
+    if (JSON.parse(localStorage.nextSymbol) === false) {
       playback.push(tile);
       document.querySelector(`.${tile}`).children[0].className =
         localStorage.personTile;
-      next = !next;
+      localStorage.nextSymbol = !!JSON.stringify("false");
       localStorage[`${tile}`] = localStorage.personTile;
     } else {
       playback.push(tile);
       document.querySelector(`.${tile}`).children[0].className =
         localStorage.otherTile;
 
-      next = !next;
+      localStorage.nextSymbol = !JSON.stringify("true");
       localStorage[`${tile}`] = localStorage.otherTile;
     }
   } else {
@@ -347,6 +361,7 @@ document.querySelector("#board").addEventListener("click", function (e) {
         const allEqual = (arr) => arr.every((v) => v === arr[0]);
         for (i = 0; i < functionArr.length; i++) {
           if (functionArr.indexOf("circle") !== -1) {
+            playSound2();
             document.querySelector(
               `.tile${winningTileValues[0]}`
             ).children[0].id = "win";
@@ -380,6 +395,7 @@ document.querySelector("#board").addEventListener("click", function (e) {
 
             break;
           } else if (functionArr.indexOf("square") !== -1) {
+            playSound2();
             document.querySelector(
               `.tile${winningTileValues[0]}`
             ).children[0].id = "win";
@@ -418,8 +434,9 @@ document.querySelector("#board").addEventListener("click", function (e) {
           }
         }
         if (allEqual(functionArr) && bothTiles === 9) {
+          playSound();
           localStorage.winningSnapshot = JSON.stringify(playback);
-          console.log(localStorage.winningSnapshot);
+          localStorage.nextSymbol = !JSON.stringify("true");
           dimScreen(
             `<h1>This round ends in a tie!!</h1><p>${localStorage.name} gets to start the next turn</p><button type="button" id="next">start next round now</button></button><a href="#">Go back to board</a>`
           );
@@ -434,6 +451,8 @@ document.querySelector("#board").addEventListener("click", function (e) {
 });
 
 document.querySelector("#congrats").addEventListener("click", function (e) {
+  document.querySelector(".space1").style.pointerEvents = "auto";
+  document.querySelector("#newGame").style.pointerEvents = "auto";
   if (e.target.id === "next") {
     playback = [];
     localStorage.removeItem("winningSnapshot");
@@ -448,7 +467,6 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
       ).children[0].className = `${tally.nextPlayer}`;
       localStorage[`tile${x}`] = tally.nextPlayer;
       playback.push(`tile${x}`);
-      console.log(playback);
     }
   } else if (e.target.tagName === "A") {
     clearModal();
@@ -456,6 +474,7 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     document.querySelector("#clear").classList.add("button-anim");
     document.getElementById("replay").classList.add("visible");
   } else if (e.target.id === "self") {
+    localStorage.nextSymbol = !JSON.stringify("true");
     tally.updateMode("self");
     clearModal();
     document.getElementById("playerMode").innerHTML =
@@ -487,6 +506,7 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     tally.askPlayer();
   } else if (e.target.id === "selfUpdate") {
     localStorage.removeItem("winningSnapshot");
+    localStorage.nextSymbol = !JSON.stringify("true");
     playback = [];
     document.getElementById("replay").classList.remove("visible");
     localStorage.mode = "self";
@@ -544,7 +564,7 @@ document.querySelector("#space").addEventListener("click", function (e) {
 });
 
 document.querySelector("#replay").addEventListener("click", function (e) {
-  console.log(localStorage.winningSnapshot);
+  document.getElementById("newGame").style.pointerEvents = "none";
   let z = JSON.parse(localStorage.winningSnapshot);
   let replayIndexes = z.map((each) => {
     return parseInt(each.substring(4));
@@ -583,10 +603,16 @@ document.querySelector("#replay").addEventListener("click", function (e) {
         localStorage.wins3
       ].children[0].id = "win";
     }, replayIndexes.length * 1000);
+
+    setTimeout(() => {
+      document.querySelector(".closeReplay").classList.add("visible");
+    }, replayIndexes.length * 900);
   }, 900);
 });
 
 document.querySelector("#closeReplay").addEventListener("click", function (e) {
+  document.getElementById("newGame").style.pointerEvents = "auto";
+
   document.querySelectorAll("body section:not(#playback").forEach((element) => {
     element.classList.remove("dim");
   });
@@ -598,6 +624,7 @@ document.querySelector("#closeReplay").addEventListener("click", function (e) {
   document.querySelectorAll(`.tileReplay`).forEach((element, index) => {
     element.children[0].id = "";
   });
+  document.querySelector(".closeReplay").classList.remove("visible");
 });
 
 document.querySelector("#newGame").addEventListener("click", function (e) {

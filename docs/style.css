@@ -100,7 +100,7 @@
         justify-content: center;
     }
 
-    #space button {
+    #space button, #replay {
         border-radius: 3px;
         padding: 10px 30px;
     }
@@ -158,6 +158,10 @@
         grid-area: space2;
     }
 
+    .hide {
+        grid-area: hiddenButton;
+    }
+
     .space {
         grid-area: scores;
     }
@@ -202,6 +206,18 @@
 
     .hide {
         display: none;
+        color: rgb(187, 163, 211);
+        margin: 0;
+        padding: 0;
+        text-decoration: rgb(197, 189, 204);
+        text-decoration-line: underline;
+        cursor: pointer;
+        text-align: center;
+        font-family: cursive;
+    }
+
+    .closeReplay {
+        display: none;
     }
 
     .visible {
@@ -218,7 +234,7 @@
         width: 100vw;
         justify-content: center;
         align-items: center;
-        grid-template-areas: 'scores' 'board';
+        grid-template-areas: 'hiddenButton' 'scores' 'board';
         grid-template-columns: repeat(1, 1fr);
     }
 
