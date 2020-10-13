@@ -45,7 +45,45 @@
         justify-self: center;
     }
 
+    #playback {
+        width: 70vw;
+        max-width: 550px;
+        top: -870px;
+        height: 70vh;
+        background-color: rgb(29, 28, 28);
+        position: absolute;
+        z-index: 1;
+        text-align: center;
+        padding: 2em;
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+        justify-self: center;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 10px 30px 10px grey inset;
+    }
+
+    #board2 {
+        height: 80%;
+        width: 80%;
+        display: grid;
+        grid-template-columns: auto auto auto;
+        grid-gap: 10px;
+        width: 100%;
+        background-color: transparent;
+        padding: 15px;
+    }
+
     .tile {
+        background-color: grey;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .tileReplay {
         background-color: grey;
         display: flex;
         flex-direction: row;
@@ -108,6 +146,10 @@
         grid-area: board;
     }
 
+    .board2 {
+        grid-area: board2;
+    }
+
     .header {
         grid-area: header;
     }
@@ -137,6 +179,33 @@
         background: grey;
         box-shadow: 2px grey;
         animation: border .4s ease 1 both;
+    }
+
+    .circleReplay {
+        width: 60%;
+        height: 60%;
+        overflow: hidden;
+        border-radius: 50%;
+        background: grey;
+        box-shadow: 2px grey;
+        animation: border .4s ease 1 both;
+    }
+
+    .squareReplay {
+        width: 60%;
+        height: 60%;
+        overflow: hidden;
+        background: grey;
+        box-shadow: 2px grey;
+        animation: border .4s ease 1 both;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .visible {
+        display: block;
     }
 
     #win {
@@ -246,8 +315,6 @@
         border-radius: 20px;
     }
 
-    @keyframes button {}
-
     .top-button {
         margin-right: .81%;
     }
@@ -285,6 +352,10 @@
         animation: button .3s ease-in-out infinite both;
     }
 
+    .replay-add {
+        animation: addReplay .5s ease-in-out 1 both;
+    }
+
     @keyframes button {
         0% {
             box-shadow: 7px 7px 39px rgb(218, 201, 218) inset
@@ -316,6 +387,24 @@
     }
 
     @keyframes alertBox {
+        0% {
+            top: -470px;
+        }
+        25% {
+            top: -370px;
+        }
+        50% {
+            top: -170px;
+        }
+        75% {
+            top: -70px;
+        }
+        100% {
+            top: 100px;
+        }
+    }
+
+    @keyframes addReplay {
         0% {
             top: -470px;
         }

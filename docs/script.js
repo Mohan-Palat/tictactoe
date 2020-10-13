@@ -1,6 +1,6 @@
 localStorage["personTile"] = "circle";
 localStorage["otherTile"] = "square";
-
+let playback = [];
 document.querySelectorAll(".tile").forEach((element, index) => {
   element.children[0].className = localStorage[`tile${index}`];
 });
@@ -14,6 +14,21 @@ document.querySelectorAll(".tile").forEach((element, index) => {
     element.children[0].id = "win";
   }
 });
+
+const dimScreen = (text) => {
+  document.querySelectorAll("body :not(.congrats").forEach((element) => {
+    element.classList.add("dim");
+  });
+  document.querySelector(".congrats").classList.add("alert");
+  document.querySelector("#congrats").innerHTML = text;
+};
+
+const clearModal = () => {
+  document.querySelectorAll("body :not(.congrats").forEach((element) => {
+    element.classList.remove("dim");
+  });
+  document.querySelector(".congrats").classList.remove("alert");
+};
 class Tally {
   constructor() {
     this.playerScore = 0;
@@ -81,47 +96,27 @@ class Tally {
   }
   chooseMode() {
     if (localStorage.getItem("mode") === null) {
-      document.querySelectorAll("body :not(.congrats").forEach((element) => {
-        element.classList.add("dim");
-      });
-      document.querySelector(".congrats").classList.add("alert");
-
-      document.querySelector(
-        "#congrats"
-      ).innerHTML = `<h1>What mode do you want to play?</h1><button type="button" id="self">Play against Others/Myself</button></button><button type="button" id="comp">Play against Computer</button></button>`;
+      dimScreen(
+        `<h1>What mode do you want to play?</h1><button type="button" id="self">Play against Others/Myself</button></button><button type="button" id="comp">Play against Computer</button></button>`
+      );
     } else {
       return;
     }
   }
   chooseModeWithoutName() {
-    document.querySelectorAll("body :not(.congrats").forEach((element) => {
-      element.classList.add("dim");
-    });
-    document.querySelector(".congrats").classList.add("alert");
-
-    document.querySelector(
-      "#congrats"
-    ).innerHTML = `<h1>Welcome to TicTacToe!</h1><p>What mode do you want to play?</p><button type="button" id="selfUpdate">Play against Others/Myself</button></button><button type="button" id="compUpdate">Play against Computer</button></button>`;
+    dimScreen(
+      `<h1>What mode do you want to play?</h1><button type="button" id="selfUpdate">Play against Others/Myself</button></button><button type="button" id="compUpdate">Play against Computer</button></button>`
+    );
   }
   showWarning() {
-    document.querySelectorAll("body :not(.congrats").forEach((element) => {
-      element.classList.add("dim");
-    });
-    document.querySelector(".congrats").classList.add("alert");
-
-    document.querySelector(
-      "#congrats"
-    ).innerHTML = `<h1>This Round is over. Click the next round button to go to the next round</h1><button type="button" id="confirm">OK</button></button>`;
+    dimScreen(
+      `<h1>This Round is over. Click the next round button to go to the next round</h1><button type="button" id="confirm">OK</button></button>`
+    );
   }
   askPlayer() {
-    document.querySelectorAll("body :not(.congrats").forEach((element) => {
-      element.classList.add("dim");
-    });
-    document.querySelector(".congrats").classList.add("alert");
-
-    document.querySelector(
-      "#congrats"
-    ).innerHTML = `<h1>What is your name?</h1><input type="text" placeholder="enter name" autocomplete=${"off"} id="nameInput"><button type="button" id="submitName">Submit</button>`;
+    dimScreen(
+      `<h1>What is your name?</h1><input type="text" placeholder="enter name" autocomplete=${"off"} id="nameInput"><button type="button" id="submitName">Submit</button>`
+    );
   }
   updateMode(mode) {
     this.mode = mode;
@@ -150,12 +145,13 @@ const nextTile = (blockTiles, emptyClasses, empty) => {
           "square";
         const tileClass = blockTiles[index].substring(1);
         localStorage[`${tileClass}`] = localStorage.otherTile;
+        playback.push(tileClass);
         break;
       }
     }
   } else {
     document.querySelector(`.tile${empty[x]}`).children[0].className = "square";
-
+    playback.push(`tile${empty[x]}`);
     localStorage[`tile${empty[x]}`] = localStorage.otherTile;
   }
 };
@@ -165,28 +161,25 @@ let next = false;
 let is;
 
 function addSign(tile) {
-  const a = document.querySelectorAll(".square").length;
-  const b = document.querySelectorAll(".circle").length;
-  const c = a + b;
-
   if (localStorage.mode === "self") {
     if (next === false) {
+      playback.push(tile);
       document.querySelector(`.${tile}`).children[0].className =
         localStorage.personTile;
       next = !next;
       localStorage[`${tile}`] = localStorage.personTile;
     } else {
-      {
-        document.querySelector(`.${tile}`).children[0].className =
-          localStorage.otherTile;
+      playback.push(tile);
+      document.querySelector(`.${tile}`).children[0].className =
+        localStorage.otherTile;
 
-        next = !next;
-        localStorage[`${tile}`] = localStorage.otherTile;
-      }
+      next = !next;
+      localStorage[`${tile}`] = localStorage.otherTile;
     }
   } else {
     document.querySelector(`.${tile}`).children[0].className =
       localStorage.personTile;
+    playback.push(tile);
 
     localStorage[`${tile}`] = localStorage.personTile;
     const list = document.querySelector("#board").children;
@@ -258,6 +251,9 @@ function clearAll() {
   localStorage.wins1 = "";
   localStorage.wins2 = "";
   localStorage.wins3 = "";
+  playback = [];
+  localStorage.removeItem("winningSnapshot");
+  document.getElementById("replay").classList.remove("visible");
 }
 const notEmpty = [];
 
@@ -324,9 +320,9 @@ document.querySelector("#board").addEventListener("click", function (e) {
       }
 
       function scoreTiles() {
-        const a = document.querySelectorAll(".square").length;
-        const b = document.querySelectorAll(".circle").length;
-        const c = a + b;
+        const squareTiles = document.querySelectorAll(".square").length;
+        const circleTiles = document.querySelectorAll(".circle").length;
+        const bothTiles = squareTiles + circleTiles;
 
         const functionArr = [
           checkScoreCircles(tileElements, 0, 1, 2),
@@ -363,21 +359,16 @@ document.querySelector("#board").addEventListener("click", function (e) {
             localStorage.wins1 = winningTileValues[0];
             localStorage.wins2 = winningTileValues[1];
             localStorage.wins3 = winningTileValues[2];
-            setTimeout(() => {
-              document
-                .querySelectorAll("body :not(.congrats")
-                .forEach((element) => {
-                  element.classList.add("dim");
-                });
-              document.querySelector(".congrats").classList.add("alert");
+            localStorage.winningSnapshot = JSON.stringify(playback);
 
-              document.querySelector("#congrats").innerHTML = `<h1>${
-                localStorage.name
-              } Wins this round!</h1>${
-                localStorage.mode === "self"
-                  ? `<p>${localStorage.otherPersonName} gets to start the next turn </p>`
-                  : ""
-              } <button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
+            setTimeout(() => {
+              dimScreen(
+                `<h1>${localStorage.name} Wins this round!</h1>${
+                  localStorage.mode === "self"
+                    ? `<p>${localStorage.otherPersonName} gets to start the next turn </p>`
+                    : ""
+                } <button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`
+              );
             }, 400);
 
             localStorage.playerScore++;
@@ -402,21 +393,16 @@ document.querySelector("#board").addEventListener("click", function (e) {
             localStorage.wins1 = winningTileValues[0];
             localStorage.wins2 = winningTileValues[1];
             localStorage.wins3 = winningTileValues[2];
-            setTimeout(() => {
-              document
-                .querySelectorAll("body :not(.congrats")
-                .forEach((element) => {
-                  element.classList.add("dim");
-                });
-              document.querySelector(".congrats").classList.add("alert");
+            localStorage.winningSnapshot = JSON.stringify(playback);
 
-              document.querySelector("#congrats").innerHTML = `<h1>${
-                localStorage.otherPersonName
-              } Wins this round!</h1><p>${
-                localStorage.mode === "self"
-                  ? localStorage.name
-                  : localStorage.otherPersonName
-              } gets to start the next turn</p><button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
+            setTimeout(() => {
+              dimScreen(
+                `<h1>${localStorage.otherPersonName} Wins this round!</h1><p>${
+                  localStorage.mode === "self"
+                    ? localStorage.name
+                    : localStorage.otherPersonName
+                } gets to start the next turn</p><button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`
+              );
             }, 400);
 
             localStorage.computerScore++;
@@ -431,19 +417,13 @@ document.querySelector("#board").addEventListener("click", function (e) {
             break;
           }
         }
-        if (allEqual(functionArr) && c === 9) {
-          document
-            .querySelectorAll("body :not(.congrats")
-            .forEach((element) => {
-              element.classList.add("dim");
-            });
-
-          document.querySelector(".congrats").classList.add("alert");
-
-          document.querySelector(
-            "#congrats"
-          ).innerHTML = `<h1>This round ends in a tie!!</h1><p>${localStorage.name} gets to start the next turn</p><button type="button" id="next">start next round now</button></button><a href="#">Go back to board</a>`;
-
+        if (allEqual(functionArr) && bothTiles === 9) {
+          localStorage.winningSnapshot = JSON.stringify(playback);
+          console.log(localStorage.winningSnapshot);
+          dimScreen(
+            `<h1>This round ends in a tie!!</h1><p>${localStorage.name} gets to start the next turn</p><button type="button" id="next">start next round now</button></button><a href="#">Go back to board</a>`
+          );
+          tally.nextPlayer = "circle";
           localStorage.ties++;
           document.getElementById("ties").innerHTML = localStorage.ties;
         }
@@ -455,10 +435,11 @@ document.querySelector("#board").addEventListener("click", function (e) {
 
 document.querySelector("#congrats").addEventListener("click", function (e) {
   if (e.target.id === "next") {
-    document.querySelectorAll("body :not(.congrats").forEach((element) => {
-      element.classList.remove("dim");
-    });
-    document.querySelector(".congrats").classList.remove("alert");
+    playback = [];
+    localStorage.removeItem("winningSnapshot");
+    document.getElementById("replay").classList.remove("visible");
+
+    clearModal();
     clearAll();
     let x = Math.floor(Math.random() * 8);
     if (tally.nextPlayer === "square" && localStorage.mode === "comp") {
@@ -466,20 +447,17 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
         `.tile${x}`
       ).children[0].className = `${tally.nextPlayer}`;
       localStorage[`tile${x}`] = tally.nextPlayer;
+      playback.push(`tile${x}`);
+      console.log(playback);
     }
   } else if (e.target.tagName === "A") {
-    document.querySelectorAll("body :not(.congrats").forEach((element) => {
-      element.classList.remove("dim");
-    });
-    document.querySelector(".congrats").classList.remove("alert");
+    clearModal();
     tally.updateBoardClear(false);
     document.querySelector("#clear").classList.add("button-anim");
+    document.getElementById("replay").classList.add("visible");
   } else if (e.target.id === "self") {
     tally.updateMode("self");
-    document.querySelectorAll("body :not(.congrats").forEach((element) => {
-      element.classList.remove("dim");
-    });
-    document.querySelector(".congrats").classList.remove("alert");
+    clearModal();
     document.getElementById("playerMode").innerHTML =
       "Player vs Other Player/Self";
     localStorage.setItem("mode", "self");
@@ -495,10 +473,7 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     tally.askPlayer();
   } else if (e.target.id === "comp") {
     tally.updateMode("comp");
-    document.querySelectorAll("body :not(.congrats").forEach((element) => {
-      element.classList.remove("dim");
-    });
-    document.querySelector(".congrats").classList.remove("alert");
+    clearModal();
     document.getElementById("playerMode").innerHTML = "Player vs Computer";
     localStorage.setItem("mode", "comp");
     localStorage.setItem(
@@ -511,11 +486,11 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     );
     tally.askPlayer();
   } else if (e.target.id === "selfUpdate") {
+    localStorage.removeItem("winningSnapshot");
+    playback = [];
+    document.getElementById("replay").classList.remove("visible");
     localStorage.mode = "self";
-    document.querySelectorAll("body :not(.congrats").forEach((element) => {
-      element.classList.remove("dim");
-    });
-    document.querySelector(".congrats").classList.remove("alert");
+    clearModal();
 
     localStorage.playerScore = 0;
     localStorage.computerScore = 0;
@@ -524,11 +499,10 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     tally.boardClear = true;
   } else if (e.target.id === "compUpdate") {
     localStorage.mode = "comp";
-
-    document.querySelectorAll("body :not(.congrats").forEach((element) => {
-      element.classList.remove("dim");
-    });
-    document.querySelector(".congrats").classList.remove("alert");
+    localStorage.removeItem("winningSnapshot");
+    playback = [];
+    document.getElementById("replay").classList.remove("visible");
+    clearModal();
 
     localStorage.playerScore = 0;
     localStorage.computerScore = 0;
@@ -536,22 +510,13 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     tally.updatePlayerNames();
     tally.boardClear = true;
   } else if (e.target.id === "confirm") {
-    document.querySelectorAll("body :not(.congrats").forEach((element) => {
-      element.classList.remove("dim");
-    });
-    document.querySelector(".congrats").classList.remove("alert");
+    clearModal();
   } else if (e.target.id === "submitName") {
     const value = document.querySelector("#nameInput").value;
     localStorage.name = value;
-    localStorage.playerScore = 0;
-    localStorage.computerScore = 0;
-    localStorage.ties = 0;
 
     tally.updatePlayerNames();
-    document.querySelectorAll("body :not(.congrats").forEach((element) => {
-      element.classList.remove("dim");
-    });
-    document.querySelector(".congrats").classList.remove("alert");
+    clearModal();
   }
 });
 
@@ -561,6 +526,7 @@ document.querySelector("#space").addEventListener("click", function (e) {
     if (e.target.classList.contains("button-anim")) {
       e.target.classList.remove("button-anim");
     }
+    document.getElementById("replay").classList.remove("visible");
     tally.updateBoardClear(true);
   } else if (e.target.id === "changeName") {
     tally.askPlayer();
@@ -569,12 +535,75 @@ document.querySelector("#space").addEventListener("click", function (e) {
       tally.boardClear = !tally.boardClear;
     }
   } else if (e.target.id === "changeMode") {
+    if (document.getElementById("clear").classList.contains("button-anim")) {
+      document.getElementById("clear").classList.remove("button-anim");
+    }
     tally.chooseModeWithoutName();
     clearAll();
   }
 });
 
+document.querySelector("#replay").addEventListener("click", function (e) {
+  console.log(localStorage.winningSnapshot);
+  let z = JSON.parse(localStorage.winningSnapshot);
+  let replayIndexes = z.map((each) => {
+    return parseInt(each.substring(4));
+  });
+
+  document.querySelectorAll("body section:not(#playback").forEach((element) => {
+    element.classList.add("dim");
+  });
+  document.querySelector("#playback").classList.add("replay-add");
+
+  setTimeout(() => {
+    let interval = 1000;
+    replayIndexes.forEach((element, index) => {
+      setTimeout(function () {
+        document.querySelectorAll(".tileReplay")[
+          element
+        ].children[0].className =
+          document.querySelectorAll(".tile")[element].children[0].className ===
+          "circle"
+            ? "circleReplay"
+            : document.querySelectorAll(".tile")[element].children[0]
+                .className === "square"
+            ? "squareReplay"
+            : "";
+      }, index * interval);
+    });
+
+    setTimeout(() => {
+      document.querySelectorAll(`.tileReplay`)[
+        localStorage.wins1
+      ].children[0].id = "win";
+      document.querySelectorAll(`.tileReplay`)[
+        localStorage.wins2
+      ].children[0].id = "win";
+      document.querySelectorAll(`.tileReplay`)[
+        localStorage.wins3
+      ].children[0].id = "win";
+    }, replayIndexes.length * 1000);
+  }, 900);
+});
+
+document.querySelector("#closeReplay").addEventListener("click", function (e) {
+  document.querySelectorAll("body section:not(#playback").forEach((element) => {
+    element.classList.remove("dim");
+  });
+  document.querySelector("#playback").classList.remove("replay-add");
+  document.querySelectorAll(".tileReplay").forEach((element, index) => {
+    element.children[0].className = "";
+  });
+
+  document.querySelectorAll(`.tileReplay`).forEach((element, index) => {
+    element.children[0].id = "";
+  });
+});
+
 document.querySelector("#newGame").addEventListener("click", function (e) {
+  if (document.getElementById("clear").classList.contains("button-anim")) {
+    document.getElementById("clear").classList.remove("button-anim");
+  }
   tally.resetAll();
   localStorage.removeItem("mode");
   tally.chooseMode();
