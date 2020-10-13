@@ -1,4 +1,3 @@
-console.log(localStorage.getItem("mode"));
 localStorage["personTile"] = "circle";
 localStorage["otherTile"] = "square";
 
@@ -8,7 +7,6 @@ document.querySelectorAll(".tile").forEach((element, index) => {
 
 document.querySelectorAll(".tile").forEach((element, index) => {
   if (parseInt(localStorage.wins1) === index) {
-    console.log("yes");
     element.children[0].id = "win";
   } else if (parseInt(localStorage.wins2) === index) {
     element.children[0].id = "win";
@@ -33,18 +31,7 @@ class Tally {
 
   changeNextPlayer(nextt) {
     if (nextt) {
-      let x = Math.floor(Math.random() * 8);
-      console.log(nextt);
       this.nextPlayer = nextt;
-      //   document.querySelector(`.tile${x}`).children[0].className = nextt;
-      //   localStorage[`tile${x}`] =
-      //     nextt === "circle"
-      //       ? localStorage.personTile
-      //       : nextt === "square"
-      //       ? localStorage.otherTile
-      //       : "";
-
-      console.log(`tile${x}`);
     }
   }
   resetAll() {
@@ -107,8 +94,6 @@ class Tally {
     }
   }
   chooseModeWithoutName() {
-    console.log(this.mode);
-
     document.querySelectorAll("body :not(.congrats").forEach((element) => {
       element.classList.add("dim");
     });
@@ -165,7 +150,6 @@ const nextTile = (blockTiles, emptyClasses, empty) => {
           "square";
         const tileClass = blockTiles[index].substring(1);
         localStorage[`${tileClass}`] = localStorage.otherTile;
-        console.log(tileClass);
         break;
       }
     }
@@ -173,7 +157,6 @@ const nextTile = (blockTiles, emptyClasses, empty) => {
     document.querySelector(`.tile${empty[x]}`).children[0].className = "square";
 
     localStorage[`tile${empty[x]}`] = localStorage.otherTile;
-    console.log(`tile${empty[x]}`);
   }
 };
 
@@ -187,14 +170,11 @@ function addSign(tile) {
   const c = a + b;
 
   if (localStorage.mode === "self") {
-    console.log(tile);
     if (next === false) {
       document.querySelector(`.${tile}`).children[0].className =
         localStorage.personTile;
       next = !next;
-      console.log(document.querySelector(`.${tile}`).children[0].className);
       localStorage[`${tile}`] = localStorage.personTile;
-      console.log(localStorage[`${tile}`]);
     } else {
       {
         document.querySelector(`.${tile}`).children[0].className =
@@ -222,8 +202,11 @@ function addSign(tile) {
       return `.tile${each}`;
     });
 
-    if (tile === "tile0" || tile === "tile1") {
-      let blockTiles = [".tile2", ".tile0", ".tile1", ".tile4"];
+    if (tile === "tile0") {
+      let blockTiles = [".tile2", ".tile8", ".tile1"];
+      nextTile(blockTiles, emptyClasses, empty);
+    } else if (tile === "tile1") {
+      let blockTiles = [".tile2", ".tile7", ".tile0"];
       nextTile(blockTiles, emptyClasses, empty);
     } else if (tile === "tile3" || tile === "tile6") {
       let blockTiles = [".tile0", ".tile6", ".tile3", ".tile4", ".tile2"];
@@ -235,7 +218,7 @@ function addSign(tile) {
       let blockTiles = [".tile8", ".tile6", ".tile4", ".tile7", ".tile2"];
       nextTile(blockTiles, emptyClasses, empty);
     } else if (tile === "tile4") {
-      let blockTiles = [".tile2", ".tile6", ".tile4", ".tile7", ".tile2"];
+      let blockTiles = [".tile5", ".tile6", ".tile4", ".tile7", ".tile8"];
       nextTile(blockTiles, emptyClasses, empty);
     } else if (tile === "tile8") {
       let blockTiles = [".tile0", ".tile6", ".tile2"];
@@ -285,168 +268,188 @@ const numWins = document.querySelectorAll("#win").forEach((element) => {
 });
 
 document.querySelector("#board").addEventListener("click", function (e) {
-  console.log(tally.boardClear);
-  if (!tally.boardClear || notEmpty > 0) {
-    tally.showWarning();
+  if (e.target.className === "circle" || e.target.className === "square") {
+    return;
+  } else if (
+    e.target.firstElementChild.classList[0] === "circle" ||
+    e.target.firstElementChild.classList[0] === "square"
+  ) {
+    return;
   } else {
-    setTimeout(() => {
-      for (let index = 0; index < 9; index++) {
-        if (e.target.className === `tile tile${index}`) {
-          addSign(e.target.classList[1]);
+    if (!tally.boardClear || notEmpty > 0) {
+      tally.showWarning();
+    } else {
+      setTimeout(() => {
+        for (let index = 0; index < 9; index++) {
+          if (e.target.className === `tile tile${index}`) {
+            addSign(e.target.classList[1]);
+          }
         }
-      }
-    }, 10);
-
-    var emptyy = [];
-
-    function test() {
-      setTimeout(function () {
-        const list = document.querySelector("#board").children;
-        const newList = Object.assign({}, list);
-
-        for (const key in newList) {
-          newList[key].firstElementChild.className;
-          emptyy.push(newList[key].firstElementChild.className);
-        }
-
-        test2();
       }, 10);
-    }
 
-    test();
-    const scenerios = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-    let values = [];
+      var tileElements = [];
 
-    function checkScore(arr, check1, check2, check3) {
-      if (arr[check1] + arr[check2] + arr[check3] === "circlecirclecircle") {
-        values.push(check1);
-        values.push(check2);
-        values.push(check3);
-        return "circle";
-      }
-    }
-
-    function checkScore2(arr, check1, check2, check3) {
-      if (arr[check1] + arr[check2] + arr[check3] === "squaresquaresquare") {
-        values.push(check1);
-        values.push(check2);
-        values.push(check3);
-        return "square";
-      }
-    }
-
-    function test2() {
-      const a = document.querySelectorAll(".square").length;
-      const b = document.querySelectorAll(".circle").length;
-      const c = a + b;
-
-      const functionArr = [
-        checkScore(emptyy, 0, 1, 2),
-        checkScore(emptyy, 3, 4, 5),
-        checkScore(emptyy, 6, 7, 8),
-        checkScore(emptyy, 1, 4, 7),
-        checkScore(emptyy, 2, 5, 8),
-        checkScore(emptyy, 0, 3, 6),
-        checkScore(emptyy, 2, 4, 6),
-        checkScore(emptyy, 0, 4, 8),
-
-        checkScore2(emptyy, 0, 1, 2),
-        checkScore2(emptyy, 3, 4, 5),
-        checkScore2(emptyy, 6, 7, 8),
-        checkScore2(emptyy, 1, 4, 7),
-        checkScore2(emptyy, 2, 5, 8),
-        checkScore2(emptyy, 0, 3, 6),
-        checkScore2(emptyy, 2, 4, 6),
-        checkScore2(emptyy, 0, 4, 8),
-      ];
-
-      const allEqual = (arr) => arr.every((v) => v === arr[0]);
-      for (i = 0; i < functionArr.length; i++) {
-        if (functionArr.indexOf("circle") !== -1) {
-          document.querySelector(`.tile${values[0]}`).children[0].id = "win";
-          document.querySelector(`.tile${values[1]}`).children[0].id = "win";
-          document.querySelector(`.tile${values[2]}`).children[0].id = "win";
-          localStorage.wins1 = values[0];
-          localStorage.wins2 = values[1];
-          localStorage.wins3 = values[2];
-          setTimeout(() => {
-            document
-              .querySelectorAll("body :not(.congrats")
-              .forEach((element) => {
-                element.classList.add("dim");
-              });
-            document.querySelector(".congrats").classList.add("alert");
-
-            document.querySelector("#congrats").innerHTML = `<h1>${
-              localStorage.name
-            } Wins this round!</h1>${
-              localStorage.mode === "self"
-                ? `<p>${localStorage.otherPersonName} gets to start the next turn </p>`
-                : ""
-            } <button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
-          }, 400);
-
-          localStorage.playerScore++;
-
-          document.getElementById("player").innerHTML =
-            localStorage.playerScore;
-
-          tally.changeNextPlayer(localStorage.personTile);
-
-          break;
-        } else if (functionArr.indexOf("square") !== -1) {
-          document.querySelector(`.tile${values[0]}`).children[0].id = "win";
-          document.querySelector(`.tile${values[1]}`).children[0].id = "win";
-          document.querySelector(`.tile${values[2]}`).children[0].id = "win";
-
-          localStorage.wins1 = values[0];
-          localStorage.wins2 = values[1];
-          localStorage.wins3 = values[2];
-          setTimeout(() => {
-            document
-              .querySelectorAll("body :not(.congrats")
-              .forEach((element) => {
-                element.classList.add("dim");
-              });
-            document.querySelector(".congrats").classList.add("alert");
-
-            document.querySelector("#congrats").innerHTML = `<h1>${
-              localStorage.otherPersonName
-            } Wins this round!</h1><p>${
-              localStorage.mode === "self"
-                ? localStorage.name
-                : localStorage.otherPersonName
-            } gets to start the next turn</p><button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
-          }, 400);
-
-          localStorage.computerScore++;
-
-          tally.updateComputerScore();
-          document.getElementById("computer").innerHTML =
-            localStorage.computerScore;
-          if (localStorage.mode === "comp") {
-            tally.changeNextPlayer(localStorage.otherTile);
+      function getTiles() {
+        setTimeout(function () {
+          const list = document.querySelector("#board").children;
+          const newList = Object.assign({}, list);
+          for (const key in newList) {
+            tileElements.push(newList[key].firstElementChild.className);
           }
 
-          break;
+          scoreTiles();
+        }, 10);
+      }
+
+      getTiles();
+
+      let winningTileValues = [];
+
+      function checkScoreCircles(arr, check1, check2, check3) {
+        if (arr[check1] + arr[check2] + arr[check3] === "circlecirclecircle") {
+          winningTileValues.push(check1);
+          winningTileValues.push(check2);
+          winningTileValues.push(check3);
+          return "circle";
         }
       }
-      if (allEqual(functionArr) && c === 9) {
-        document.querySelectorAll("body :not(.congrats").forEach((element) => {
-          element.classList.add("dim");
-        });
 
-        document.querySelector(".congrats").classList.add("alert");
-
-        document.querySelector(
-          "#congrats"
-        ).innerHTML = `<h1>This round ends in a tie!!</h1><p>${localStorage.name} gets to start the next turn</p><button type="button" id="next">start next round now</button></button><a href="#">Go back to board</a>`;
-
-        localStorage.ties++;
-        document.getElementById("ties").innerHTML = localStorage.ties;
+      function checkScoreSquares(arr, check1, check2, check3) {
+        if (arr[check1] + arr[check2] + arr[check3] === "squaresquaresquare") {
+          winningTileValues.push(check1);
+          winningTileValues.push(check2);
+          winningTileValues.push(check3);
+          return "square";
+        }
       }
+
+      function scoreTiles() {
+        const a = document.querySelectorAll(".square").length;
+        const b = document.querySelectorAll(".circle").length;
+        const c = a + b;
+
+        const functionArr = [
+          checkScoreCircles(tileElements, 0, 1, 2),
+          checkScoreCircles(tileElements, 3, 4, 5),
+          checkScoreCircles(tileElements, 6, 7, 8),
+          checkScoreCircles(tileElements, 1, 4, 7),
+          checkScoreCircles(tileElements, 2, 5, 8),
+          checkScoreCircles(tileElements, 0, 3, 6),
+          checkScoreCircles(tileElements, 2, 4, 6),
+          checkScoreCircles(tileElements, 0, 4, 8),
+
+          checkScoreSquares(tileElements, 0, 1, 2),
+          checkScoreSquares(tileElements, 3, 4, 5),
+          checkScoreSquares(tileElements, 6, 7, 8),
+          checkScoreSquares(tileElements, 1, 4, 7),
+          checkScoreSquares(tileElements, 2, 5, 8),
+          checkScoreSquares(tileElements, 0, 3, 6),
+          checkScoreSquares(tileElements, 2, 4, 6),
+          checkScoreSquares(tileElements, 0, 4, 8),
+        ];
+
+        const allEqual = (arr) => arr.every((v) => v === arr[0]);
+        for (i = 0; i < functionArr.length; i++) {
+          if (functionArr.indexOf("circle") !== -1) {
+            document.querySelector(
+              `.tile${winningTileValues[0]}`
+            ).children[0].id = "win";
+            document.querySelector(
+              `.tile${winningTileValues[1]}`
+            ).children[0].id = "win";
+            document.querySelector(
+              `.tile${winningTileValues[2]}`
+            ).children[0].id = "win";
+            localStorage.wins1 = winningTileValues[0];
+            localStorage.wins2 = winningTileValues[1];
+            localStorage.wins3 = winningTileValues[2];
+            setTimeout(() => {
+              document
+                .querySelectorAll("body :not(.congrats")
+                .forEach((element) => {
+                  element.classList.add("dim");
+                });
+              document.querySelector(".congrats").classList.add("alert");
+
+              document.querySelector("#congrats").innerHTML = `<h1>${
+                localStorage.name
+              } Wins this round!</h1>${
+                localStorage.mode === "self"
+                  ? `<p>${localStorage.otherPersonName} gets to start the next turn </p>`
+                  : ""
+              } <button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
+            }, 400);
+
+            localStorage.playerScore++;
+
+            document.getElementById("player").innerHTML =
+              localStorage.playerScore;
+
+            tally.changeNextPlayer(localStorage.personTile);
+
+            break;
+          } else if (functionArr.indexOf("square") !== -1) {
+            document.querySelector(
+              `.tile${winningTileValues[0]}`
+            ).children[0].id = "win";
+            document.querySelector(
+              `.tile${winningTileValues[1]}`
+            ).children[0].id = "win";
+            document.querySelector(
+              `.tile${winningTileValues[2]}`
+            ).children[0].id = "win";
+
+            localStorage.wins1 = winningTileValues[0];
+            localStorage.wins2 = winningTileValues[1];
+            localStorage.wins3 = winningTileValues[2];
+            setTimeout(() => {
+              document
+                .querySelectorAll("body :not(.congrats")
+                .forEach((element) => {
+                  element.classList.add("dim");
+                });
+              document.querySelector(".congrats").classList.add("alert");
+
+              document.querySelector("#congrats").innerHTML = `<h1>${
+                localStorage.otherPersonName
+              } Wins this round!</h1><p>${
+                localStorage.mode === "self"
+                  ? localStorage.name
+                  : localStorage.otherPersonName
+              } gets to start the next turn</p><button type="button" id="next">Next Round</button></button><a href="#">Go back to board</a>`;
+            }, 400);
+
+            localStorage.computerScore++;
+
+            tally.updateComputerScore();
+            document.getElementById("computer").innerHTML =
+              localStorage.computerScore;
+            if (localStorage.mode === "comp") {
+              tally.changeNextPlayer(localStorage.otherTile);
+            }
+
+            break;
+          }
+        }
+        if (allEqual(functionArr) && c === 9) {
+          document
+            .querySelectorAll("body :not(.congrats")
+            .forEach((element) => {
+              element.classList.add("dim");
+            });
+
+          document.querySelector(".congrats").classList.add("alert");
+
+          document.querySelector(
+            "#congrats"
+          ).innerHTML = `<h1>This round ends in a tie!!</h1><p>${localStorage.name} gets to start the next turn</p><button type="button" id="next">start next round now</button></button><a href="#">Go back to board</a>`;
+
+          localStorage.ties++;
+          document.getElementById("ties").innerHTML = localStorage.ties;
+        }
+      }
+      scoreTiles();
     }
-    test2();
   }
 });
 
@@ -470,9 +473,9 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     });
     document.querySelector(".congrats").classList.remove("alert");
     tally.updateBoardClear(false);
+    document.querySelector("#clear").classList.add("button-anim");
   } else if (e.target.id === "self") {
     tally.updateMode("self");
-    console.log(tally.mode);
     document.querySelectorAll("body :not(.congrats").forEach((element) => {
       element.classList.remove("dim");
     });
@@ -492,7 +495,6 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     tally.askPlayer();
   } else if (e.target.id === "comp") {
     tally.updateMode("comp");
-    console.log(tally.mode);
     document.querySelectorAll("body :not(.congrats").forEach((element) => {
       element.classList.remove("dim");
     });
@@ -520,7 +522,6 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
     localStorage.ties = 0;
     tally.updatePlayerNames();
     tally.boardClear = true;
-    //tally.askPlayer();
   } else if (e.target.id === "compUpdate") {
     localStorage.mode = "comp";
 
@@ -557,7 +558,9 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
 document.querySelector("#space").addEventListener("click", function (e) {
   if (e.target.id === "clear") {
     clearAll();
-
+    if (e.target.classList.contains("button-anim")) {
+      e.target.classList.remove("button-anim");
+    }
     tally.updateBoardClear(true);
   } else if (e.target.id === "changeName") {
     tally.askPlayer();
@@ -566,9 +569,7 @@ document.querySelector("#space").addEventListener("click", function (e) {
       tally.boardClear = !tally.boardClear;
     }
   } else if (e.target.id === "changeMode") {
-    //tally.mode = "";
     tally.chooseModeWithoutName();
-
     clearAll();
   }
 });
@@ -577,5 +578,4 @@ document.querySelector("#newGame").addEventListener("click", function (e) {
   tally.resetAll();
   localStorage.removeItem("mode");
   tally.chooseMode();
-  console.log(localStorage.getItem("mode"));
 });
