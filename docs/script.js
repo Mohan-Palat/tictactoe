@@ -241,7 +241,7 @@ function addSign(tile) {
       let blockTiles = [".tile8", ".tile5", ".tile2", ".tile4", ".tile6"];
       nextTile(blockTiles, emptyClasses, empty);
     } else if (tile === "tile7") {
-      let blockTiles = [".tile8", ".tile6", ".tile4", ".tile7", ".tile2"];
+      let blockTiles = [".tile1", ".tile6", ".tile4", ".tile7", ".tile2"];
       nextTile(blockTiles, emptyClasses, empty);
     } else if (tile === "tile4") {
       let blockTiles = [".tile5", ".tile6", ".tile4", ".tile7", ".tile8"];
