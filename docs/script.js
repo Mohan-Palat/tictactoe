@@ -121,7 +121,7 @@ class Tally {
     if (localStorage.getItem("mode") === null) {
       localStorage.playback = "";
       dimScreen(
-        `<h1>What mode do you want to play?</h1><button type="button" id="self">Play against Others/Myself</button></button><button type="button" id="comp">Play against Computer</button></button>`
+        `<h1>Welcome! What mode do you want to play?</h1><button type="button" id="self">Play against Others/Myself</button></button><button type="button" id="comp">Play against Computer</button></button>`
       );
     } else {
       return;
