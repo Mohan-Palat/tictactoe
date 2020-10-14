@@ -21,6 +21,9 @@ The game uses local storage so tile positions are not cleared when user refreshe
 
 I used a combination of functions, class properties and methods, local storage and event listeners to keep track of the user's position and score the game. Each tile in the board has a child element Div and the tiles themselves have individual classes and a shared class ("tile). There is an event listener on the board tiles that reports which tile was clicked, so long as the tile has not been clicked before. Depending on the mode chosen, the tile clicked has a class (which has an animation that draws either a circle or square). The tile clicked has the class of either circle or square added to it. Then, if the mode is play with computer, the AI function determines where the computer should play. Then the scoring function checks if the tiles click so far meet the winning conditions or tie condition.
 
+- HTML Structure:
+  ![](./html.png)
+
 ### How i solved for the winner:
 
 I used a combination of arrays and event listeners. Each time a tile is clicked, a class is attached to it(either circle or square) and the class is pushed to an array collecting all the tiles that have classes so far. I also declared two scoring functions that check the array for the various patterns that indicate a win. Another array, which contains all the permutations that indicate a win checks each winning pattern and returns the first one that matches by looping over and breaking the loop once a winning permutation is found. If none of the functions in the array returns a winning permutation and the board is fully occupied, a tie is declared.
