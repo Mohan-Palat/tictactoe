@@ -1,3 +1,4 @@
+// Intialize local storage
 localStorage["personTile"] = "circle";
 localStorage["otherTile"] = "square";
 
@@ -12,10 +13,13 @@ const playSound2 = () => {
 };
 
 let playback = [];
+
+//assign classes to tiles from local storage on refresh/load
 document.querySelectorAll(".tile").forEach((element, index) => {
   element.children[0].className = localStorage[`tile${index}`];
 });
 
+// assign winning tile class styles/animation from local storage on refresh/load
 document.querySelectorAll(".tile").forEach((element, index) => {
   if (parseInt(localStorage.wins1) === index) {
     element.children[0].id = "win";
@@ -26,7 +30,9 @@ document.querySelectorAll(".tile").forEach((element, index) => {
   }
 });
 
+// reduce screen opacity and add alert element to dom
 const dimScreen = (text) => {
+  //prevent other buttons from being clicked when modal is open
   document.querySelector(".space1").style.pointerEvents = "none";
   document.querySelector("#newGame").style.pointerEvents = "none";
 
@@ -91,7 +97,7 @@ class Tally {
   updateBoardClear(update) {
     this.boardClear = update;
   }
-  updatePlayerNames(update) {
+  updatePlayerNames() {
     if (localStorage.mode === "self") {
       localStorage.otherPersonName = "Other Person";
     } else if (localStorage.mode === "comp") {
@@ -148,18 +154,21 @@ tally.chooseMode();
 tally.changeNextPlayer();
 tally.updatePlayerNames();
 
+//calculate what tile AI plays on
 const nextTile = (blockTiles, emptyClasses, empty) => {
-  let none = 0;
+  let unOccupiedTiles = 0;
   let x = Math.floor(Math.random() * empty.length);
 
+  // get the tiles classes that are free from array of tiles given
   for (let index = 0; index < blockTiles.length; index++) {
     if (emptyClasses.indexOf(blockTiles[index]) !== -1) {
-      none += 1;
+      unOccupiedTiles += 1;
     }
   }
-  if (none > 0) {
+  if (unOccupiedTiles > 0) {
     for (let index = 0; index < blockTiles.length; index++) {
       if (emptyClasses.indexOf(blockTiles[index]) !== -1) {
+        // play on the first one in array that is empty
         document.querySelector(`${blockTiles[index]}`).children[0].className =
           "square";
         const tileClass = blockTiles[index].substring(1);
@@ -170,6 +179,7 @@ const nextTile = (blockTiles, emptyClasses, empty) => {
       }
     }
   } else {
+    // if none is unOcupied, play on any random tile.
     document.querySelector(`.tile${empty[x]}`).children[0].className = "square";
     playback.push(`tile${empty[x]}`);
     localStorage.playback += `tile${empty[x]}`;
@@ -313,6 +323,7 @@ document.querySelector("#board").addEventListener("click", function (e) {
         setTimeout(function () {
           const list = document.querySelector("#board").children;
           const newList = Object.assign({}, list);
+          //get each tile's firstchild classname (to know which player played on the tile)
           for (const key in newList) {
             tileElements.push(newList[key].firstElementChild.className);
           }
@@ -369,6 +380,7 @@ document.querySelector("#board").addEventListener("click", function (e) {
         ];
 
         const allEqual = (arr) => arr.every((v) => v === arr[0]);
+        //loop through and break when any winning permutation is returned
         for (i = 0; i < functionArr.length; i++) {
           if (functionArr.indexOf("circle") !== -1) {
             playSound2();
@@ -452,6 +464,8 @@ document.querySelector("#board").addEventListener("click", function (e) {
             break;
           }
         }
+
+        // if all the values in funtionArr are undefined(gotten if neither circle or square combinations are found) and if all tiles are occupied, declare a tie)
         if (allEqual(functionArr) && bothTiles === 9) {
           playSound();
           //localStorage.winningSnapshot = JSON.stringify(playback);
