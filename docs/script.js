@@ -513,7 +513,10 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
         ? "Computer"
         : ""
     );
-
+    localStorage.playerScore = 0;
+    localStorage.computerScore = 0;
+    localStorage.ties = 0;
+    //tally.updatePlayerNames();
     tally.askPlayer();
   } else if (e.target.id === "comp") {
     tally.updateMode("comp");
@@ -528,6 +531,10 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
         ? "Computer"
         : ""
     );
+    localStorage.playerScore = 0;
+    localStorage.computerScore = 0;
+    localStorage.ties = 0;
+    //tally.updatePlayerNames();
     tally.askPlayer();
   } else if (e.target.id === "selfUpdate") {
     localStorage.removeItem("winningSnapshot");
