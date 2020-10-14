@@ -1,5 +1,6 @@
 localStorage["personTile"] = "circle";
 localStorage["otherTile"] = "square";
+
 const playSound = () => {
   let audio = document.getElementById("clickSound");
   audio.play();
@@ -112,6 +113,7 @@ class Tally {
   }
   chooseMode() {
     if (localStorage.getItem("mode") === null) {
+      localStorage.playback = "";
       dimScreen(
         `<h1>What mode do you want to play?</h1><button type="button" id="self">Play against Others/Myself</button></button><button type="button" id="comp">Play against Computer</button></button>`
       );
@@ -120,6 +122,7 @@ class Tally {
     }
   }
   chooseModeWithoutName() {
+    localStorage.playback = "";
     dimScreen(
       `<h1>What mode do you want to play?</h1><button type="button" id="selfUpdate">Play against Others/Myself</button></button><button type="button" id="compUpdate">Play against Computer</button></button>`
     );
@@ -162,12 +165,14 @@ const nextTile = (blockTiles, emptyClasses, empty) => {
         const tileClass = blockTiles[index].substring(1);
         localStorage[`${tileClass}`] = localStorage.otherTile;
         playback.push(tileClass);
+        localStorage.playback += `${tileClass},`;
         break;
       }
     }
   } else {
     document.querySelector(`.tile${empty[x]}`).children[0].className = "square";
     playback.push(`tile${empty[x]}`);
+    localStorage.playback += `tile${empty[x]}`;
     localStorage[`tile${empty[x]}`] = localStorage.otherTile;
   }
 };
@@ -178,12 +183,15 @@ function addSign(tile) {
   if (localStorage.mode === "self") {
     if (JSON.parse(localStorage.nextSymbol) === false) {
       playback.push(tile);
+      localStorage.playback += `${tile},`;
+
       document.querySelector(`.${tile}`).children[0].className =
         localStorage.personTile;
       localStorage.nextSymbol = !!JSON.stringify("false");
       localStorage[`${tile}`] = localStorage.personTile;
     } else {
       playback.push(tile);
+      localStorage.playback += `${tile},`;
       document.querySelector(`.${tile}`).children[0].className =
         localStorage.otherTile;
 
@@ -194,6 +202,7 @@ function addSign(tile) {
     document.querySelector(`.${tile}`).children[0].className =
       localStorage.personTile;
     playback.push(tile);
+    localStorage.playback += `${tile},`;
 
     localStorage[`${tile}`] = localStorage.personTile;
     const list = document.querySelector("#board").children;
@@ -266,6 +275,7 @@ function clearAll() {
   localStorage.wins2 = "";
   localStorage.wins3 = "";
   playback = [];
+  localStorage.removeItem("playback");
   localStorage.removeItem("winningSnapshot");
   document.getElementById("replay").classList.remove("visible");
 }
@@ -374,8 +384,13 @@ document.querySelector("#board").addEventListener("click", function (e) {
             localStorage.wins1 = winningTileValues[0];
             localStorage.wins2 = winningTileValues[1];
             localStorage.wins3 = winningTileValues[2];
-            localStorage.winningSnapshot = JSON.stringify(playback);
 
+            let m = localStorage.playback;
+            n = m.split(",");
+            n.pop();
+
+            //localStorage.winningSnapshot = JSON.stringify(playback);
+            localStorage.winningSnapshot = JSON.stringify(n);
             setTimeout(() => {
               dimScreen(
                 `<h1>${localStorage.name} Wins this round!</h1>${
@@ -409,8 +424,12 @@ document.querySelector("#board").addEventListener("click", function (e) {
             localStorage.wins1 = winningTileValues[0];
             localStorage.wins2 = winningTileValues[1];
             localStorage.wins3 = winningTileValues[2];
-            localStorage.winningSnapshot = JSON.stringify(playback);
+            // localStorage.winningSnapshot = JSON.stringify(playback);
+            let m = localStorage.playback;
+            n = m.split(",");
+            n.pop();
 
+            localStorage.winningSnapshot = JSON.stringify(n);
             setTimeout(() => {
               dimScreen(
                 `<h1>${localStorage.otherPersonName} Wins this round!</h1><p>${
@@ -435,7 +454,7 @@ document.querySelector("#board").addEventListener("click", function (e) {
         }
         if (allEqual(functionArr) && bothTiles === 9) {
           playSound();
-          localStorage.winningSnapshot = JSON.stringify(playback);
+          //localStorage.winningSnapshot = JSON.stringify(playback);
           localStorage.nextSymbol = !JSON.stringify("true");
           dimScreen(
             `<h1>This round ends in a tie!!</h1><p>${localStorage.name} gets to start the next turn</p><button type="button" id="next">start next round now</button></button><a href="#">Go back to board</a>`
@@ -443,6 +462,11 @@ document.querySelector("#board").addEventListener("click", function (e) {
           tally.nextPlayer = "circle";
           localStorage.ties++;
           document.getElementById("ties").innerHTML = localStorage.ties;
+          let m = localStorage.playback;
+          n = m.split(",");
+          n.pop();
+
+          localStorage.winningSnapshot = JSON.stringify(n);
         }
       }
       scoreTiles();
@@ -467,6 +491,7 @@ document.querySelector("#congrats").addEventListener("click", function (e) {
       ).children[0].className = `${tally.nextPlayer}`;
       localStorage[`tile${x}`] = tally.nextPlayer;
       playback.push(`tile${x}`);
+      localStorage.playback += `tile${x},`;
     }
   } else if (e.target.tagName === "A") {
     clearModal();
@@ -548,6 +573,7 @@ document.querySelector("#space").addEventListener("click", function (e) {
     }
     document.getElementById("replay").classList.remove("visible");
     tally.updateBoardClear(true);
+    localStorage.playback = "";
   } else if (e.target.id === "changeName") {
     tally.askPlayer();
     if (!tally.boardClear) {
@@ -567,7 +593,7 @@ document.querySelector("#replay").addEventListener("click", function (e) {
   document.getElementById("newGame").style.pointerEvents = "none";
   let z = JSON.parse(localStorage.winningSnapshot);
   let replayIndexes = z.map((each) => {
-    return parseInt(each.substring(4));
+    return parseInt(each[each.length - 1]);
   });
 
   document.querySelectorAll("body section:not(#playback").forEach((element) => {
