@@ -1,6 +1,8 @@
-// Intialize local storage
+// Intialize tile class local storage
 localStorage["personTile"] = "circle";
 localStorage["otherTile"] = "square";
+
+/* sound play functions (called when there is a winning tile) */
 
 const playSound = () => {
   let audio = document.getElementById("clickSound");
@@ -30,11 +32,13 @@ document.querySelectorAll(".tile").forEach((element, index) => {
   }
 });
 
-// reduce screen opacity and add alert element to dom
+// function to reduce screen opacity and add alert (modal) element to dom
 const dimScreen = (text) => {
   //prevent other buttons from being clicked when modal is open
   document.querySelector(".space1").style.pointerEvents = "none";
   document.querySelector("#newGame").style.pointerEvents = "none";
+
+  /// select all body elements that are not the modal and add the class to them
 
   document.querySelectorAll("body :not(.congrats").forEach((element) => {
     element.classList.add("dim");
@@ -43,12 +47,14 @@ const dimScreen = (text) => {
   document.querySelector("#congrats").innerHTML = text;
 };
 
+// function to clear the modal/alert and remove dim effect from elements
 const clearModal = () => {
   document.querySelectorAll("body :not(.congrats").forEach((element) => {
     element.classList.remove("dim");
   });
   document.querySelector(".congrats").classList.remove("alert");
 };
+
 class Tally {
   constructor() {
     this.playerScore = 0;
@@ -69,6 +75,7 @@ class Tally {
       this.nextPlayer = nextt;
     }
   }
+
   resetAll() {
     this.playerScore = 0;
     this.computerScore = 0;
@@ -85,18 +92,23 @@ class Tally {
     localStorage.computerScore = 0;
     localStorage.ties = 0;
   }
+
   updatePlayerScore() {
     this.playerScore += 1;
   }
+
   updateComputerScore() {
     this.computerScore += 1;
   }
+
   updateTies() {
     this.ties += 1;
   }
+
   updateBoardClear(update) {
     this.boardClear = update;
   }
+
   updatePlayerNames() {
     if (localStorage.mode === "self") {
       localStorage.otherPersonName = "Other Person";
@@ -117,6 +129,7 @@ class Tally {
     document.getElementById("computer").innerHTML = localStorage.computerScore;
     document.getElementById("ties").innerHTML = localStorage.ties;
   }
+
   chooseMode() {
     if (localStorage.getItem("mode") === null) {
       localStorage.playback = "";
@@ -127,22 +140,26 @@ class Tally {
       return;
     }
   }
+
   chooseModeWithoutName() {
     localStorage.playback = "";
     dimScreen(
       `<h1>What mode do you want to play?</h1><button type="button" id="selfUpdate">Play against Others/Myself</button></button><button type="button" id="compUpdate">Play against Computer</button></button>`
     );
   }
+
   showWarning() {
     dimScreen(
       `<h1>This Round is over. Click the next round button to go to the next round</h1><button type="button" id="confirm">OK</button></button>`
     );
   }
+
   askPlayer() {
     dimScreen(
       `<h1>What is your name?</h1><input type="text" placeholder="enter name" autocomplete=${"off"} id="nameInput"><button type="button" id="submitName">Submit</button>`
     );
   }
+
   updateMode(mode) {
     this.mode = mode;
   }
@@ -155,19 +172,20 @@ tally.changeNextPlayer();
 tally.updatePlayerNames();
 
 //calculate what tile AI plays on
-const nextTile = (blockTiles, emptyClasses, empty) => {
+const nextTileAI = (blockTiles, emptyTileClasses, emptyTiles) => {
   let unOccupiedTiles = 0;
-  let x = Math.floor(Math.random() * empty.length);
+  let x = Math.floor(Math.random() * emptyTiles.length);
 
   // get the tiles classes that are free from array of tiles given
   for (let index = 0; index < blockTiles.length; index++) {
-    if (emptyClasses.indexOf(blockTiles[index]) !== -1) {
+    if (emptyTileClasses.indexOf(blockTiles[index]) !== -1) {
       unOccupiedTiles += 1;
     }
   }
+
   if (unOccupiedTiles > 0) {
     for (let index = 0; index < blockTiles.length; index++) {
-      if (emptyClasses.indexOf(blockTiles[index]) !== -1) {
+      if (emptyTileClasses.indexOf(blockTiles[index]) !== -1) {
         // play on the first one in array that is empty
         document.querySelector(`${blockTiles[index]}`).children[0].className =
           "square";
@@ -180,14 +198,15 @@ const nextTile = (blockTiles, emptyClasses, empty) => {
     }
   } else {
     // if none is unOcupied, play on any random tile.
-    document.querySelector(`.tile${empty[x]}`).children[0].className = "square";
-    playback.push(`tile${empty[x]}`);
-    localStorage.playback += `tile${empty[x]}`;
-    localStorage[`tile${empty[x]}`] = localStorage.otherTile;
+    document.querySelector(`.tile${emptyTiles[x]}`).children[0].className =
+      "square";
+    playback.push(`tile${emptyTiles[x]}`);
+    localStorage.playback += `tile${emptyTiles[x]}`;
+    localStorage[`tile${emptyTiles[x]}`] = localStorage.otherTile;
   }
 };
 
-var empty = [];
+var emptyTiles = [];
 
 function addSign(tile) {
   if (localStorage.mode === "self") {
@@ -216,48 +235,52 @@ function addSign(tile) {
 
     localStorage[`${tile}`] = localStorage.personTile;
     const list = document.querySelector("#board").children;
+    /// object.assign removes the last property (length) from list variable because it is unneeded, we only want the elements
     const newList = Object.assign({}, list);
 
+    /// get the tiles that don't have a class applied (user hasnt clicked on them)
     for (const key in newList) {
       if (newList[key].firstElementChild.classList.length < 1) {
-        empty.push(parseInt(key));
+        emptyTiles.push(parseInt(key));
       }
     }
 
-    let emptyClasses = empty.map((each) => {
+    ///transform array elements to match the css class on the tiles
+    let emptyTileClasses = emptyTiles.map((each) => {
       return `.tile${each}`;
     });
 
+    //// depending on where the tile was played, blocktiles array gives the AI function nextTileAI() the tile positions to try to block the user.
     if (tile === "tile0") {
       let blockTiles = [".tile2", ".tile8", ".tile1"];
-      nextTile(blockTiles, emptyClasses, empty);
+      nextTileAI(blockTiles, emptyTileClasses, emptyTiles);
     } else if (tile === "tile1") {
       let blockTiles = [".tile2", ".tile7", ".tile0"];
-      nextTile(blockTiles, emptyClasses, empty);
+      nextTileAI(blockTiles, emptyTileClasses, emptyTiles);
     } else if (tile === "tile3" || tile === "tile6") {
       let blockTiles = [".tile0", ".tile6", ".tile3", ".tile4", ".tile2"];
-      nextTile(blockTiles, emptyClasses, empty);
+      nextTileAI(blockTiles, emptyTileClasses, emptyTiles);
     } else if (tile === "tile2" || tile === "tile5") {
       let blockTiles = [".tile8", ".tile5", ".tile2", ".tile4", ".tile6"];
-      nextTile(blockTiles, emptyClasses, empty);
+      nextTileAI(blockTiles, emptyTileClasses, emptyTiles);
     } else if (tile === "tile7") {
       let blockTiles = [".tile1", ".tile6", ".tile4", ".tile7", ".tile2"];
-      nextTile(blockTiles, emptyClasses, empty);
+      nextTileAI(blockTiles, emptyTileClasses, emptyTiles);
     } else if (tile === "tile4") {
       let blockTiles = [".tile5", ".tile6", ".tile4", ".tile7", ".tile8"];
-      nextTile(blockTiles, emptyClasses, empty);
+      nextTileAI(blockTiles, emptyTileClasses, emptyTiles);
     } else if (tile === "tile8") {
       let blockTiles = [".tile0", ".tile6", ".tile2"];
-      nextTile(blockTiles, emptyClasses, empty);
+      nextTileAI(blockTiles, emptyTileClasses, emptyTiles);
     } else {
-      document.querySelector(`.tile${empty[x]}`).children[0].className =
+      document.querySelector(`.tile${emptyTiles[x]}`).children[0].className =
         "square";
 
-      localStorage[`tile${empty[x]}`] = localStorage.otherTile;
+      localStorage[`tile${emptyTiles[x]}`] = localStorage.otherTile;
     }
 
-    empty = [];
-    emptyClasses = [];
+    emptyTiles = [];
+    emptyTileClasses = [];
   }
 }
 
@@ -289,15 +312,17 @@ function clearAll() {
   localStorage.removeItem("winningSnapshot");
   document.getElementById("replay").classList.remove("visible");
 }
-const notEmpty = [];
 
-const numWins = document.querySelectorAll("#win").forEach((element) => {
+const tilesWithWinningStyles = [];
+
+document.querySelectorAll("#win").forEach((element) => {
   if (element !== "") {
-    notEmpty.push(element);
+    tilesWithWinningStyles.push(element);
   }
 });
 
 document.querySelector("#board").addEventListener("click", function (e) {
+  // if the element clicked on already has a class or if it's child element has a class, return (to prevent double clicking)
   if (e.target.className === "circle" || e.target.className === "square") {
     return;
   } else if (
@@ -306,7 +331,7 @@ document.querySelector("#board").addEventListener("click", function (e) {
   ) {
     return;
   } else {
-    if (!tally.boardClear || notEmpty > 0) {
+    if (!tally.boardClear || tilesWithWinningStyles > 0) {
       tally.showWarning();
     } else {
       setTimeout(() => {
@@ -488,9 +513,11 @@ document.querySelector("#board").addEventListener("click", function (e) {
   }
 });
 
+//event listener attached to congratulations modal
 document.querySelector("#congrats").addEventListener("click", function (e) {
   document.querySelector(".space1").style.pointerEvents = "auto";
   document.querySelector("#newGame").style.pointerEvents = "auto";
+
   if (e.target.id === "next") {
     playback = [];
     localStorage.removeItem("winningSnapshot");
